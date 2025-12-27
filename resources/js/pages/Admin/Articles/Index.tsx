@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Edit2Icon, TrashIcon, PlusIcon, Eye, Newspaper } from 'lucide-react';
 import { format } from 'date-fns';
 import { type BreadcrumbItem } from '@/types';
@@ -67,6 +68,12 @@ interface PageProps {
     category_id?: string;
     search?: string;
   };
+  flash: {
+    success?: string;
+    error?: string;
+    warning?: string;
+    info?: string;
+  };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -80,12 +87,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ArticlesIndex() {
-  const { articles, categories, filters } = usePage<PageProps>().props;
+  const { articles, categories, filters, flash } = usePage<PageProps>().props;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [searchQuery, setSearchQuery] = useState(filters.search || '');
   const [statusFilter, setStatusFilter] = useState(filters.status || '');
   const [categoryFilter, setCategoryFilter] = useState(filters.category_id || '');
+  const [showSuccessAlert, setShowSuccessAlert] = useState(!!flash.success);
 
   const openDeleteDialog = (article: Article) => {
     setSelectedArticle(article);
@@ -157,6 +165,29 @@ export default function ArticlesIndex() {
             </Link>
           </Button>
         </div>
+
+        {/* Flash Messages */}
+        {showSuccessAlert && flash.success && (
+          <Alert className="border-green-200 bg-green-50">
+            <AlertDescription className="text-green-800">
+              ✅ {flash.success}
+              <button 
+                onClick={() => setShowSuccessAlert(false)}
+                className="ml-4 text-green-600 hover:text-green-800 text-sm underline"
+              >
+                Tutup
+              </button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {flash.error && (
+          <Alert className="border-red-200 bg-red-50">
+            <AlertDescription className="text-red-800">
+              ❌ {flash.error}
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Filters */}
         <div className="rounded-xl border border-sidebar-border/70 bg-background p-4">

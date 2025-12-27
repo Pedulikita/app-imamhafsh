@@ -144,7 +144,7 @@ export default function HeroSlidesIndex() {
                     <TableCell>
                       {slide.image ? (
                         <img
-                          src={`/${slide.image}`}
+                          src={slide.image}
                           alt={slide.title}
                           className="h-12 w-20 rounded-md object-cover"
                         />

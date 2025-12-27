@@ -24,8 +24,8 @@ class TeacherMiddleware
             return redirect()->route('login')->with('error', 'Please login to access teacher features.');
         }
 
-        // Check if user has teacher role or super admin role
-        if (!$user->hasRole('teacher') && !$user->hasRole('super_admin')) {
+        // Check if user has teacher role, admin role, or super admin role
+        if (!$user->hasRole('teacher') && !$user->hasRole('admin') && !$user->hasRole('super_admin')) {
             abort(403, 'Access denied. Teacher role required.');
         }
 

@@ -5,6 +5,9 @@
 # Laravel Task Scheduler (runs every minute to check for scheduled tasks)
 * * * * * cd /path/to/imamhafsh.com && php artisan schedule:run >> /dev/null 2>&1
 
+# Ensure storage symlink exists (every 5 minutes)
+*/5 * * * * cd /home/u817493080/domains/imamhafsh.com/public_html && [ ! -L storage ] && ln -sfn ../laravel_app/storage/app/public storage >> /home/u817493080/domains/imamhafsh.com/laravel_app/storage/logs/cron.log 2>&1
+
 # Database optimization (weekly on Sunday at 2:00 AM)
 0 2 * * 0 cd /path/to/imamhafsh.com && php artisan optimize:clear >> storage/logs/cron.log 2>&1
 

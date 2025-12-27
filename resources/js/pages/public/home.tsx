@@ -1,5 +1,5 @@
 import PublicLayout from '@/layouts/public-layout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { defaultContent } from '@/data/defaultContent';
 import { defaultPrograms, programThemes } from '@/data/programs';
 import DonationSection from '@/components/DonationSection';
@@ -217,16 +217,6 @@ import { useEffect, useState } from 'react';
          setCurrentFacility((prev) => (prev - 1 + activityList.length) % activityList.length);
      };
 
-    useEffect(() => {
-        if (!dbHeroSlides || dbHeroSlides.length <= 1) return;
-
-        const intervalId = window.setInterval(() => {
-            setActiveHeroSlide((prev) => (prev + 1) % dbHeroSlides.length);
-        }, 5000);
-
-        return () => window.clearInterval(intervalId);
-    }, [dbHeroSlides]);
-
     return (
         <PublicLayout>
             <Head title="Home">
@@ -257,16 +247,29 @@ import { useEffect, useState } from 'react';
 
                                 <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
                                     {dbHeroSlides[activeHeroSlide]?.button_text && dbHeroSlides[activeHeroSlide]?.button_link ? (
-                                        <a
-                                            href={dbHeroSlides[activeHeroSlide].button_link}
-                                            className="inline-flex items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
-                                        >
-                                            {dbHeroSlides[activeHeroSlide].button_text}
-                                        </a>
+                                        dbHeroSlides[activeHeroSlide].button_link.startsWith('http') || dbHeroSlides[activeHeroSlide].button_link.startsWith('#') ? (
+                                            <a
+                                                href={dbHeroSlides[activeHeroSlide].button_link}
+                                                className="relative z-10 inline-flex items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-amber-300 cursor-pointer"
+                                                {...(dbHeroSlides[activeHeroSlide].button_link.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                                                onClick={(e) => {
+                                                    console.log('Button clicked!', dbHeroSlides[activeHeroSlide].button_link);
+                                                }}
+                                            >
+                                                {dbHeroSlides[activeHeroSlide].button_text}
+                                            </a>
+                                        ) : (
+                                            <Link
+                                                href={dbHeroSlides[activeHeroSlide].button_link}
+                                                className="relative z-10 inline-flex items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-amber-300 cursor-pointer"
+                                            >
+                                                {dbHeroSlides[activeHeroSlide].button_text}
+                                            </Link>
+                                        )
                                     ) : (
                                         <a
                                             href="#program"
-                                            className="inline-flex items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
+                                            className="relative z-10 inline-flex items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-amber-300 cursor-pointer"
                                         >
                                             Daftar Sekarang
                                         </a>
@@ -312,7 +315,7 @@ import { useEffect, useState } from 'react';
                                     dbHeroSlides.map((slide, idx) => (
                                         <img
                                             key={slide.id}
-                                            src={`/${slide.image}`}
+                                            src={slide.image}
                                             alt={slide.title}
                                             className={`absolute inset-0 h-full w-full object-contain object-center transition-opacity duration-700 ${
                                                 idx === activeHeroSlide
@@ -470,13 +473,25 @@ import { useEffect, useState } from 'react';
 
                             {homeSections?.about?.button_text && homeSections?.about?.button_link && (
                                 <div className="mt-7">
-                                    <a
-                                        href={homeSections.about.button_link}
-                                        className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
-                                    >
-                                        {homeSections.about.button_text}
-                                        <ArrowRight className="size-4" />
-                                    </a>
+                                    {homeSections.about.button_link.startsWith('http') ? (
+                                        <a
+                                            href={homeSections.about.button_link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
+                                        >
+                                            {homeSections.about.button_text}
+                                            <ArrowRight className="size-4" />
+                                        </a>
+                                    ) : (
+                                        <Link
+                                            href={homeSections.about.button_link}
+                                            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
+                                        >
+                                            {homeSections.about.button_text}
+                                            <ArrowRight className="size-4" />
+                                        </Link>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -583,13 +598,25 @@ import { useEffect, useState } from 'react';
 
                             {homeSections?.pendidikan?.button_text && homeSections?.pendidikan?.button_link && (
                                 <div className="mt-7">
-                                    <a
-                                        href={homeSections.pendidikan.button_link}
-                                        className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
-                                    >
-                                        {homeSections.pendidikan.button_text}
-                                        <ArrowRight className="size-4" />
-                                    </a>
+                                    {homeSections.pendidikan.button_link.startsWith('http') ? (
+                                        <a
+                                            href={homeSections.pendidikan.button_link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
+                                        >
+                                            {homeSections.pendidikan.button_text}
+                                            <ArrowRight className="size-4" />
+                                        </a>
+                                    ) : (
+                                        <Link
+                                            href={homeSections.pendidikan.button_link}
+                                            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
+                                        >
+                                            {homeSections.pendidikan.button_text}
+                                            <ArrowRight className="size-4" />
+                                        </Link>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -661,13 +688,25 @@ import { useEffect, useState } from 'react';
 
                             {homeSections?.galeri?.button_text && homeSections?.galeri?.button_link && (
                                 <div className="mt-7">
-                                    <a
-                                        href={homeSections.galeri.button_link}
-                                        className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
-                                    >
-                                        {homeSections.galeri.button_text}
-                                        <ArrowRight className="size-4" />
-                                    </a>
+                                    {homeSections.galeri.button_link.startsWith('http') ? (
+                                        <a
+                                            href={homeSections.galeri.button_link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
+                                        >
+                                            {homeSections.galeri.button_text}
+                                            <ArrowRight className="size-4" />
+                                        </a>
+                                    ) : (
+                                        <Link
+                                            href={homeSections.galeri.button_link}
+                                            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-600"
+                                        >
+                                            {homeSections.galeri.button_text}
+                                            <ArrowRight className="size-4" />
+                                        </Link>
+                                    )}
                                 </div>
                             )}
                         </div>

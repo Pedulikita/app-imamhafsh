@@ -139,7 +139,7 @@ export default function HeroSlidesEdit() {
                         <div className="mb-4">
                           <p className="text-sm text-gray-600 mb-2">Current Image:</p>
                           <img
-                            src={`/${slide.image}`}
+                            src={slide.image}
                             alt={slide.title}
                             className="w-full h-64 object-cover rounded-lg"
                           />

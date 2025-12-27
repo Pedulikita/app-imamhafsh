@@ -1,21 +1,10 @@
-# ✅ DEPLOYMENT BERHASIL!
+# 🚀 PANDUAN DEPLOY LARAVEL KE HOSTING
 
-## 🎉 STATUS: Laravel Successfully Deployed!
-- **Server**: 77.37.81.252:65002
-- **Domain**: imamhafsh.com  
-- **Status**: **Live & Ready**
-
-## 📊 Deployment Summary
-- ✅ SSH Connection: Connected successfully  
-- ✅ Repository Clone: Laravel files uploaded to ~/domains/imamhafsh.com/public_html
-- ✅ Composer Install: Dependencies installed (production mode)
-- ✅ Environment Setup: .env file created & APP_KEY generated
-- ✅ Permissions: Storage and cache folders configured (755)
-- ✅ Laravel Cache: Config, routes, and views cached for performance
-- ⚠️ NPM Build: Skipped (not available on hosting)
-
-## 🔗 Website Access
-**URL**: http://imamhafsh.com atau https://imamhafsh.com
+## 📋 Informasi Hosting
+- **Server**: 77.37.81.252
+- **Port SSH**: 65002  
+- **User**: u817493080
+- **Status**: SSH connection ready
 
 ## 🔧 LANGKAH-LANGKAH DEPLOYMENT
 
@@ -27,14 +16,7 @@ ssh -p 65002 u817493080@77.37.81.252
 ### 2. **Clone Repository dari GitHub**
 Setelah masuk SSH, clone project dari GitHub:
 ```bash
-cd ~/domains/imamhafsh.com/
-git clone https://github.com/Pedulikita/app-imamhafsh.git .
-```
-
-**Alternatif jika folder sudah ada isinya:**
-```bash
-cd ~/domains/imamhafsh.com/
-rm -rf * .*  # Hapus semua file existing (HATI-HATI!)
+cd ~/public_html
 git clone https://github.com/Pedulikita/app-imamhafsh.git .
 ```
 

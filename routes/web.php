@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use App\Http\Controllers\TeacherClassController;
 use Illuminate\Support\Facades\Route;
@@ -116,32 +116,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Articles Management Routes
     Route::prefix('admin/articles')->name('articles.')->group(function () {
-        // View articles - accessible by penulis, editor, super_admin
+        // View articles - accessible by penulis, editor, admin, super_admin
         Route::get('/', [\App\Http\Controllers\ArticleController::class, 'index'])
-            ->middleware(['role:penulis,editor,super_admin'])
+            ->middleware(['role:penulis,editor,admin,super_admin'])
             ->name('index');
         
-        // Create articles - accessible by penulis, editor, super_admin
+        // Create articles - accessible by penulis, editor, admin, super_admin
         Route::get('/create', [\App\Http\Controllers\ArticleController::class, 'create'])
-            ->middleware(['role:penulis,editor,super_admin'])
+            ->middleware(['role:penulis,editor,admin,super_admin'])
             ->name('create');
         
         Route::post('/', [\App\Http\Controllers\ArticleController::class, 'store'])
-            ->middleware(['role:penulis,editor,super_admin'])
+            ->middleware(['role:penulis,editor,admin,super_admin'])
             ->name('store');
         
-        // Edit articles - accessible by penulis (own), editor, super_admin
+        // Edit articles - accessible by penulis (own), editor, admin, super_admin
         Route::get('/{article}/edit', [\App\Http\Controllers\ArticleController::class, 'edit'])
-            ->middleware(['role:penulis,editor,super_admin'])
+            ->middleware(['role:penulis,editor,admin,super_admin'])
             ->name('edit');
         
         Route::put('/{article}', [\App\Http\Controllers\ArticleController::class, 'update'])
-            ->middleware(['role:penulis,editor,super_admin'])
+            ->middleware(['role:penulis,editor,admin,super_admin'])
             ->name('update');
         
-        // Delete articles - accessible by penulis (own), editor, super_admin
+        // Delete articles - accessible by penulis (own), editor, admin, super_admin
         Route::delete('/{article}', [\App\Http\Controllers\ArticleController::class, 'destroy'])
-            ->middleware(['role:penulis,editor,super_admin'])
+            ->middleware(['role:penulis,editor,admin,super_admin'])
             ->name('destroy');
     });
 

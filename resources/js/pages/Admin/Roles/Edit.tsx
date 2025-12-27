@@ -40,7 +40,17 @@ export default function RolesEdit() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.put(`/roles/${role.id}`, formData);
+    
+    // For super admin, ensure all permissions are included
+    let submitData = { ...formData };
+    if (role.name === 'super_admin') {
+      const allPermissionIds = Object.values(permissions)
+        .flat()
+        .map((p) => p.id);
+      submitData.permissions = allPermissionIds;
+    }
+    
+    router.put(`/roles/${role.id}`, submitData);
   };
 
   const togglePermission = (permissionId: number) => {
@@ -122,7 +132,14 @@ export default function RolesEdit() {
             <Card>
               <CardHeader>
                 <CardTitle>Permissions</CardTitle>
-                <CardDescription>Select permissions for this role</CardDescription>
+                <CardDescription>
+                  Select permissions for this role
+                  {role.name === 'super_admin' && (
+                    <span className="block mt-2 text-amber-600 font-medium">
+                      ⚠️ Super Admin automatically has access to ALL permissions regardless of selection below
+                    </span>
+                  )}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
@@ -135,6 +152,7 @@ export default function RolesEdit() {
                           variant="outline"
                           size="sm"
                           onClick={() => toggleGroupPermissions(groupPermissions)}
+                          disabled={role.name === 'super_admin'}
                         >
                           {groupPermissions.every((p) => formData.permissions.includes(p.id))
                             ? 'Deselect All'
@@ -146,15 +164,23 @@ export default function RolesEdit() {
                           <div key={permission.id} className="flex items-start space-x-2">
                             <Checkbox
                               id={`permission-${permission.id}`}
-                              checked={formData.permissions.includes(permission.id)}
+                              checked={
+                                role.name === 'super_admin' 
+                                  ? true 
+                                  : formData.permissions.includes(permission.id)
+                              }
                               onCheckedChange={() => togglePermission(permission.id)}
+                              disabled={role.name === 'super_admin'}
                             />
                             <div className="grid gap-1.5 leading-none">
                               <label
                                 htmlFor={`permission-${permission.id}`}
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${role.name === 'super_admin' ? 'cursor-default' : 'cursor-pointer'}`}
                               >
                                 {permission.display_name}
+                                {role.name === 'super_admin' && (
+                                  <span className="ml-2 text-green-600">✓ Always Granted</span>
+                                )}
                               </label>
                               {permission.description && (
                                 <p className="text-sm text-muted-foreground">

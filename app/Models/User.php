@@ -84,6 +84,11 @@ class User extends Authenticatable
      */
     public function hasPermission(string $permissionName): bool
     {
+        // Super admin and admin have all permissions
+        if ($this->hasRole(['super_admin', 'admin'])) {
+            return true;
+        }
+        
         foreach ($this->roles as $role) {
             if ($role->hasPermission($permissionName)) {
                 return true;
@@ -100,7 +105,13 @@ class User extends Authenticatable
     {
         return $this->hasRole('super_admin');
     }
-
+    /**
+     * Check if user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
     /**
      * Get all permissions through roles.
      */
@@ -167,7 +178,7 @@ class User extends Authenticatable
      */
     public function canManageAllArticles(): bool
     {
-        return $this->hasRole(['super_admin', 'editor']);
+        return $this->hasRole(['super_admin', 'admin', 'editor']);
     }
 
     /**
@@ -202,7 +213,7 @@ class User extends Authenticatable
     public function canDeleteArticle($article): bool
     {
         // Hanya Super Admin dan Editor yang bisa delete
-        if ($this->hasRole(['super_admin', 'editor'])) {
+        if ($this->hasRole(['super_admin', 'admin', 'editor'])) {
             return true;
         }
         

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Super Admin Access</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Test Super Admin Access</h1>
+    
+    <h2>Login Instructions:</h2>
+    <p>Use one of these accounts to login:</p>
+    <ul>
+        <li><strong>teacher@imamhafsh.com</strong> (has super_admin role)</li>
+        <li><strong>admin@imamhafsh.com</strong> (has super_admin role)</li>
+    </ul>
+    
+    <h2>Test Steps:</h2>
+    <ol>
+        <li>Go to <a href="http://localhost:8000/login" target="_blank">http://localhost:8000/login</a></li>
+        <li>Login with one of the super admin accounts above</li>
+        <li>Go to <a href="http://localhost:8000/admin/articles" target="_blank">http://localhost:8000/admin/articles</a></li>
+        <li>You should be able to access the articles admin page</li>
+        <li>Try to create/edit articles - it should work</li>
+    </ol>
+    
+    <h2>Debug Info:</h2>
+    <p>If you still can't access articles admin:</p>
+    <ul>
+        <li>Check you're logged in as the right user</li>
+        <li>Clear browser cache and cookies</li>
+        <li>Check Laravel logs for errors</li>
+        <li>Make sure the role system is working correctly</li>
+    </ul>
+    
+    <p><a href="http://localhost:8000" target="_blank">Go to Homepage</a></p>
+</body>
+</html>

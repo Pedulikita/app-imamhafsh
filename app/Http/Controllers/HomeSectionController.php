@@ -61,7 +61,7 @@ class HomeSectionController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('home-sections', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = '/storage/' . $path;
         }
 
         HomeSection::create($validated);
@@ -114,12 +114,12 @@ class HomeSectionController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($homeSection->image && file_exists(public_path($homeSection->image))) {
-                unlink(public_path($homeSection->image));
+            if ($homeSection->image && Storage::disk('public')->exists(str_replace('/storage/', '', $homeSection->image))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $homeSection->image));
             }
 
             $path = $request->file('image')->store('home-sections', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $validated['image'] = '/storage/' . $path;
         } else {
             // Keep existing image if no new file uploaded
             unset($validated['image']);
@@ -137,9 +137,9 @@ class HomeSectionController extends Controller
      */
     public function destroy(HomeSection $homeSection)
     {
-        // Delete image if exists
-        if ($homeSection->image && file_exists(public_path($homeSection->image))) {
-            unlink(public_path($homeSection->image));
+        // Delete image if exists from Storage
+        if ($homeSection->image && Storage::disk('public')->exists(str_replace('/storage/', '', $homeSection->image))) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $homeSection->image));
         }
 
         $homeSection->delete();

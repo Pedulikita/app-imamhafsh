@@ -142,7 +142,7 @@ class ArticleController extends Controller
         $user = auth()->user();
 
         // Penulis hanya bisa edit artikel mereka sendiri
-        if (!$user->isSuperAdmin() && $user->hasRole('penulis') && $article->author_id !== $user->id) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && $user->hasRole('penulis') && $article->author_id !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -163,7 +163,7 @@ class ArticleController extends Controller
         $user = auth()->user();
 
         // Penulis hanya bisa edit artikel mereka sendiri
-        if (!$user->isSuperAdmin() && $user->hasRole('penulis') && $article->author_id !== $user->id) {
+        if (!$user->isSuperAdmin() && !$user->isAdmin() && $user->hasRole('penulis') && $article->author_id !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -238,7 +238,8 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
-        return back()->with('success', 'Artikel berhasil diupdate!');
+        return redirect()->route('articles.index')
+            ->with('success', 'Artikel berhasil diupdate!');
     }
 
     /**

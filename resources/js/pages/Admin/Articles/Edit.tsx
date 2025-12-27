@@ -10,10 +10,17 @@ import { type BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
 import { RichTextEditor } from '@/components/rich-text-editor';
 
+interface Role {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 interface User {
   id: number;
   name: string;
   email: string;
+  roles?: Role[];
 }
 
 interface Category {
@@ -42,6 +49,9 @@ interface Article {
 interface PageProps {
   article: Article;
   categories: Category[];
+  auth: {
+    user: User;
+  };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -59,7 +69,36 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ArticlesEdit() {
-  const { article, categories } = usePage<PageProps>().props;
+  const { article, categories, auth } = usePage<PageProps>().props;
+  
+  // Role checking helpers - Super Admin gets full access always
+  const isSuperAdmin = () => {
+    return auth.user?.roles?.some(role => role.name === 'super_admin') || false;
+  };
+  
+  const hasRole = (roleName: string) => {
+    return auth.user?.roles?.some(role => 
+      role.name === roleName || role.slug === roleName
+    ) || false;
+  };
+  
+  const canManageAllArticles = () => {
+    if (isSuperAdmin()) return true; // Super admin always can manage
+    return hasRole('admin') || hasRole('editor');
+  };
+  
+  const canEditThisArticle = () => {
+    if (isSuperAdmin()) return true; // Super admin can edit ANY article
+    const canManageAll = canManageAllArticles();
+    const isPenulis = hasRole('penulis');
+    const isAuthor = article.author.id === auth.user.id;
+    return canManageAll || (isPenulis && isAuthor);
+  };
+  
+  const canPublishArticles = () => {
+    if (isSuperAdmin()) return true; // Super admin can publish
+    return hasRole('admin') || hasRole('editor');
+  };
   const [formData, setFormData] = useState({
     title: article.title,
     slug: article.slug,
@@ -74,9 +113,19 @@ export default function ArticlesEdit() {
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(article.featured_image);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    
+    // Check if user has permission to edit this article (Super admin always can)
+    if (!isSuperAdmin() && !canEditThisArticle()) {
+      setErrors({ form: 'Anda tidak memiliki izin untuk mengedit artikel ini.' });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setErrors({});
     
     const data = new FormData();
     data.append('title', formData.title);
@@ -99,7 +148,15 @@ export default function ArticlesEdit() {
     data.append('_method', 'PUT');
 
     router.post(`/admin/articles/${article.id}`, data, {
-      onError: (errors) => setErrors(errors as Record<string, string>),
+      onError: (errors) => {
+        setErrors(errors as Record<string, string>);
+        setIsSubmitting(false);
+      },
+      onFinish: () => {
+        // Reset loading state if there were errors
+        // Success case is handled by backend redirect
+        setIsSubmitting(false);
+      }
     });
   };
 
@@ -123,13 +180,33 @@ export default function ArticlesEdit() {
               <ArrowLeftIcon className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-semibold">Edit Artikel</h1>
             <p className="text-sm text-muted-foreground">Update artikel "{article.title}"</p>
+            
+            {/* Role Status Info */}
+            {isSuperAdmin() && (
+              <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-700 text-sm font-semibold">✅ Super Admin Access</p>
+                <p className="text-green-600 text-xs">Anda memiliki akses penuh untuk mengedit semua artikel.</p>
+              </div>
+            )}
+            
+            {!canEditThisArticle() && (
+              <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-sm font-semibold">⚠️ Akses Terbatas</p>
+                <p className="text-red-600 text-xs">Anda tidak memiliki izin untuk mengedit artikel ini. Role: {auth.user.roles?.map(r => r.name).join(', ')}</p>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Form */}
+        {errors.form && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-700 text-sm font-semibold">{errors.form}</p>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="grid gap-4 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-4">
@@ -143,6 +220,7 @@ export default function ArticlesEdit() {
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="Masukkan judul artikel..."
                   required
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
               </div>
@@ -154,6 +232,7 @@ export default function ArticlesEdit() {
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                   placeholder="otomatis-dari-judul"
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.slug && <p className="text-sm text-red-500">{errors.slug}</p>}
                 <p className="text-xs text-muted-foreground">URL: /article/{formData.slug || 'slug'}</p>
@@ -167,6 +246,7 @@ export default function ArticlesEdit() {
                   onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                   placeholder="Ringkasan singkat artikel..."
                   rows={3}
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.excerpt && <p className="text-sm text-red-500">{errors.excerpt}</p>}
               </div>
@@ -177,8 +257,9 @@ export default function ArticlesEdit() {
               <Label htmlFor="content">Konten Artikel *</Label>
               <RichTextEditor
                 content={formData.content}
-                onChange={(content) => setFormData({ ...formData, content })}
+                onChange={(content) => (isSuperAdmin() || canEditThisArticle()) && setFormData({ ...formData, content })}
                 placeholder="Tulis konten artikel di sini..."
+                disabled={!isSuperAdmin() && !canEditThisArticle()}
               />
               {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
             </div>
@@ -194,6 +275,7 @@ export default function ArticlesEdit() {
                   value={formData.meta_title}
                   onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
                   placeholder="Judul untuk SEO (opsional)"
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.meta_title && <p className="text-sm text-red-500">{errors.meta_title}</p>}
               </div>
@@ -206,6 +288,7 @@ export default function ArticlesEdit() {
                   onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
                   placeholder="Deskripsi untuk search engine..."
                   rows={3}
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.meta_description && <p className="text-sm text-red-500">{errors.meta_description}</p>}
               </div>
@@ -225,22 +308,48 @@ export default function ArticlesEdit() {
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 >
                   <option value="draft">Draft</option>
                   <option value="review">Review</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
+                  {(isSuperAdmin() || canPublishArticles()) && <option value="published">Published</option>}
+                  {(isSuperAdmin() || canManageAllArticles()) && <option value="archived">Archived</option>}
                 </select>
                 {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
               </div>
 
               <div className="text-xs text-muted-foreground space-y-1">
                 <p>Penulis: {article.author.name}</p>
+                <p>Editor: {auth.user.name}</p>
+                <p>Role: {isSuperAdmin() ? 'Super Admin' : auth.user.roles?.map(r => r.name).join(', ') || 'No roles'}</p>
+                {isSuperAdmin() && (
+                  <p className="text-green-600 font-semibold">✨ Full Access</p>
+                )}
+                {!canEditThisArticle() && !isSuperAdmin() && (
+                  <p className="text-red-500 font-semibold">⚠️ Tidak ada izin untuk mengedit artikel ini</p>
+                )}
               </div>
 
               <div className="flex gap-2 pt-4 border-t">
-                <Button type="submit" className="flex-1">Update</Button>
-                <Button type="button" variant="outline" asChild>
+                {(isSuperAdmin() || canEditThisArticle()) ? (
+                  <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <span className="mr-2">⏳</span>
+                        {isSuperAdmin() ? 'Mengupdate... (Super Admin)' : 'Mengupdate...'}
+                      </>
+                    ) : (
+                      <>
+                        {isSuperAdmin() ? 'Update Artikel (Super Admin)' : 'Update Artikel'}
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button disabled className="flex-1">
+                    Tidak Ada Izin Edit
+                  </Button>
+                )}
+                <Button type="button" variant="outline" asChild disabled={isSubmitting}>
                   <Link href="/admin/articles">Batal</Link>
                 </Button>
               </div>
@@ -267,6 +376,7 @@ export default function ArticlesEdit() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.featured_image && <p className="text-sm text-red-500">{errors.featured_image}</p>}
                 <p className="text-xs text-muted-foreground">Max 2MB (JPG, PNG, WebP)</p>
@@ -284,6 +394,7 @@ export default function ArticlesEdit() {
                   value={formData.category_id}
                   onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 >
                   <option value="">Tanpa Kategori</option>
                   {categories.map((category) => (
@@ -307,6 +418,7 @@ export default function ArticlesEdit() {
                   value={formData.tags}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                   placeholder="berita, pendidikan, kegiatan"
+                  disabled={!isSuperAdmin() && !canEditThisArticle()}
                 />
                 {errors.tags && <p className="text-sm text-red-500">{errors.tags}</p>}
                 <p className="text-xs text-muted-foreground">Contoh: berita, kegiatan, prestasi</p>

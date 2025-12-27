@@ -1,7 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import PublicLayout from '@/layouts/public-layout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     BadgeCheck,
     BookOpen,
@@ -145,7 +145,7 @@ export default function Pendaftaran() {
                                 asChild
                                 className="rounded-full bg-amber-400 px-6 py-6 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
                             >
-                                <a href="https://kolaborasitemanbaik.com/ppdb/imam-hafsh-p6swYI">Mulai Pendaftaran</a>
+                                <a href="https://kolaborasitemanbaik.com/ppdb/imam-hafsh-p6swYI" target="_blank" rel="noopener noreferrer">Mulai Pendaftaran</a>
                             </Button>
                             <Button
                                 asChild

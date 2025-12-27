@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HeroSlide;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,8 +49,8 @@ class HeroSlideController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/hero'), $imageName);
-            $validated['image'] = 'images/hero/' . $imageName;
+            $path = $image->storeAs('hero-slides', $imageName, 'public');
+            $validated['image'] = url('storage/' . $path); // URL lengkap dengan domain
         }
 
         HeroSlide::create($validated);
@@ -85,14 +86,14 @@ class HeroSlideController extends Controller
         // Upload new image if provided
         if ($request->hasFile('image')) {
             // Delete old image
-            if ($heroSlide->image && file_exists(public_path($heroSlide->image))) {
-                unlink(public_path($heroSlide->image));
+            if ($heroSlide->image && Storage::disk('public')->exists(str_replace('/storage/', '', $heroSlide->image))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $heroSlide->image));
             }
 
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/hero'), $imageName);
-            $validated['image'] = 'images/hero/' . $imageName;
+            $path = $image->storeAs('hero-slides', $imageName, 'public');
+            $validated['image'] = url('storage/' . $path); // URL lengkap dengan domain
         }
 
         $heroSlide->update($validated);
@@ -105,9 +106,9 @@ class HeroSlideController extends Controller
      */
     public function destroy(HeroSlide $heroSlide)
     {
-        // Delete image file
-        if ($heroSlide->image && file_exists(public_path($heroSlide->image))) {
-            unlink(public_path($heroSlide->image));
+        // Delete image file from Storage
+        if ($heroSlide->image && Storage::disk('public')->exists(str_replace('/storage/', '', $heroSlide->image))) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $heroSlide->image));
         }
 
         $heroSlide->delete();

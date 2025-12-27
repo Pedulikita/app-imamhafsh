@@ -53,6 +53,14 @@ class RolesAndPermissionsSeeder extends Seeder
             ]
         );
 
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'admin'],
+            [
+                'display_name' => 'Admin',
+                'description' => 'Full administrative access - can manage pages, articles, and most admin features'
+            ]
+        );
+
         $editorRole = Role::firstOrCreate(
             ['name' => 'editor'],
             [
@@ -81,6 +89,9 @@ class RolesAndPermissionsSeeder extends Seeder
         
         // Super Admin gets all permissions
         $superAdminRole->permissions()->sync(Permission::all());
+
+        // Admin gets all permissions (same as super admin)
+        $adminRole->permissions()->sync(Permission::all());
 
         // Editor gets pages and article permissions
         $editorRole->permissions()->sync(
@@ -114,6 +125,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->command->info('');
         $this->command->info('Created Roles:');
         $this->command->info('- Super Admin: Full access to everything');
+        $this->command->info('- Admin: Full administrative access');
         $this->command->info('- Editor: Can manage pages and articles');
         $this->command->info('- Penulis: Can create and edit own articles');
         $this->command->info('- User: Basic access only');
