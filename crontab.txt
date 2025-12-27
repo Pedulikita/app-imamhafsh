@@ -1,0 +1,30 @@
+# CRON JOB CONFIGURATION FOR IMAMHAFSH.COM
+# Add these lines to your server's crontab
+# Run: crontab -e and paste the content below
+
+# Laravel Task Scheduler (runs every minute to check for scheduled tasks)
+* * * * * cd /path/to/imamhafsh.com && php artisan schedule:run >> /dev/null 2>&1
+
+# Database optimization (weekly on Sunday at 2:00 AM)
+0 2 * * 0 cd /path/to/imamhafsh.com && php artisan optimize:clear >> storage/logs/cron.log 2>&1
+
+# Clear expired sessions (daily at 3:00 AM)
+0 3 * * * cd /path/to/imamhafsh.com && php artisan session:gc >> storage/logs/cron.log 2>&1
+
+# Log rotation (daily at 4:00 AM)
+0 4 * * * cd /path/to/imamhafsh.com && find storage/logs -name "*.log" -size +50M -exec mv {} {}.old \; >> storage/logs/cron.log 2>&1
+
+# Cache clear (daily at 5:00 AM) 
+0 5 * * * cd /path/to/imamhafsh.com && php artisan cache:clear >> storage/logs/cron.log 2>&1
+
+# Config and route cache refresh (weekly on Monday at 6:00 AM)
+0 6 * * 1 cd /path/to/imamhafsh.com && php artisan config:cache && php artisan route:cache >> storage/logs/cron.log 2>&1
+
+# Database backup (daily at 1:00 AM)
+0 1 * * * cd /path/to/imamhafsh.com && php artisan backup:database >> storage/logs/cron.log 2>&1
+
+# Cleanup temporary files (daily at midnight)
+0 0 * * * cd /path/to/imamhafsh.com && find storage/app/temp -type f -mtime +1 -delete >> storage/logs/cron.log 2>&1
+
+# Queue work monitoring (restart every hour)
+0 * * * * cd /path/to/imamhafsh.com && php artisan queue:restart >> /dev/null 2>&1
