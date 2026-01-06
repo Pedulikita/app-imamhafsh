@@ -60,7 +60,7 @@ class UserController extends Controller
             $user->roles()->sync($request->roles);
         }
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan!');
     }
 
     /**
@@ -119,7 +119,7 @@ class UserController extends Controller
 
         \Log::info('User updated successfully', ['user_id' => $user->id]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diupdate!');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate!');
     }
 
     /**
