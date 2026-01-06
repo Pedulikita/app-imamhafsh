@@ -45,14 +45,24 @@ class Testimony extends Model
             return null;
         }
         
-        // If the avatar already starts with storage/, return it as is
-        if (str_starts_with($this->avatar, 'storage/')) {
-            return '/' . $this->avatar;
+        // If the avatar already starts with http:// or https://, return as is
+        if (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://')) {
+            return $this->avatar;
         }
         
-        // If the avatar starts with testimonies/, prepend storage/
+        // If the avatar already starts with storage/, return as absolute URL
+        if (str_starts_with($this->avatar, 'storage/')) {
+            return url($this->avatar);
+        }
+        
+        // If the avatar starts with testimonies/, prepend storage/ and make absolute
         if (str_starts_with($this->avatar, 'testimonies/')) {
-            return '/storage/' . $this->avatar;
+            return url('storage/' . $this->avatar);
+        }
+        
+        // If it starts with /, return as absolute URL
+        if (str_starts_with($this->avatar, '/')) {
+            return url($this->avatar);
         }
         
         // Otherwise, return as is
