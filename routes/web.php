@@ -245,7 +245,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Teacher Class Management Routes
     Route::prefix('teacher')->name('teacher.')
-        ->middleware(['auth', 'verified', 'role:teacher'])
+        ->middleware(['auth', 'verified', 'role:teacher,super_admin'])
         ->group(function () {
         // Teacher Dashboard
         Route::get('dashboard', [TeacherClassController::class, 'dashboard'])
