@@ -124,10 +124,12 @@ class TeacherClassController extends Controller
             'statistics' => [
                 'total_classes' => $totalClasses,
                 'total_students' => $totalStudents,
-                'average_attendance' => round($avgAttendanceRate, 2)
+                'average_attendance' => round($avgAttendanceRate ?? 0, 2)
             ],
             'classes' => $classesData,
             'recent_activities' => $recentActivities,
+            'exam_stats' => $examStats,
+            'schedule_stats' => $scheduleStats,
             'canManageClasses' => $user->hasPermission('manage_classes') || $user->isSuperAdmin()
         ]);
     }
