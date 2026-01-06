@@ -6,14 +6,6 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-// Debug route for testing user edit
-Route::get('/test-edit', function() {
-    return view('test-edit');
-});
-
-Route::view('/test-edit-form', 'test-edit');
-
 Route::get('/about', [\App\Http\Controllers\PublicPageController::class, 'about'])->name('about');
 Route::get('/nilai', [\App\Http\Controllers\PublicPageController::class, 'nilai'])->name('nilai');
 Route::get('/mutu', [\App\Http\Controllers\PublicPageController::class, 'mutu'])->name('mutu');
@@ -68,6 +60,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Role Management Routes (Super Admin only)
     Route::middleware(['role:super_admin'])->group(function () {
+        Route::resource('roles', \App\Http\Controllers\RoleController::class);
+        Route::post('roles/assign', [\App\Http\Controllers\RoleController::class, 'assignToUser'])->name('roles.assign');
+        Route::delete('roles/remove', [\App\Http\Controllers\RoleController::class, 'removeFromUser'])->name('roles.remove');
+        
+        Route::resource('permissions', \App\Http\Controllers\PermissionController::class)->only(['index', 'store', 'update', 'destroy']);
+    });
+
+    // Role Management Routes (Super Admin only) - dengan prefix admin
+    Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:super_admin'])->group(function () {
         Route::resource('roles', \App\Http\Controllers\RoleController::class);
         Route::post('roles/assign', [\App\Http\Controllers\RoleController::class, 'assignToUser'])->name('roles.assign');
         Route::delete('roles/remove', [\App\Http\Controllers\RoleController::class, 'removeFromUser'])->name('roles.remove');
