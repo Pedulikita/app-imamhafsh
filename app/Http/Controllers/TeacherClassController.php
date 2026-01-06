@@ -23,28 +23,39 @@ class TeacherClassController extends Controller
 
     public function dashboard()
     {
-        $user = Auth::user();
+        \Log::info('Teacher dashboard accessed', ['user_id' => auth()->id()]);
         
-        // Get teacher's classes
-        $query = TeacherClass::with(['teacher', 'grade', 'subject', 'students'])
-                             ->active();
+        try {
+            $user = Auth::user();
+            \Log::info('User loaded', ['user_id' => $user->id, 'roles' => $user->roles->pluck('name')]);
+            
+            // Get teacher's classes
+            $query = TeacherClass::with(['teacher', 'grade', 'subject', 'students'])
+                                 ->active();
 
-        // If user is teacher, only show their classes
-        if ($user->hasRole('teacher')) {
-            $query->forTeacher($user->id);
-        }
+            // If user is teacher, only show their classes
+            if ($user->hasRole('teacher')) {
+                $query->forTeacher($user->id);
+                \Log::info('Applied teacher filter', ['user_id' => $user->id]);
+            } else {
+                \Log::info('No teacher filter applied - user is not teacher');
+            }
 
-        $classes = $query->get();
+            $classes = $query->get();
+            \Log::info('Classes loaded', ['count' => $classes->count()]);
 
-        // Calculate statistics
-        $totalClasses = $classes->count();
-        $totalStudents = $classes->sum('total_students');
-        $avgAttendanceRate = $classes->avg('attendance_rate');
+            // Calculate statistics
+            $totalClasses = $classes->count();
+            $totalStudents = $classes->sum('total_students');
+            $avgAttendanceRate = $classes->avg('attendance_rate');
+            \Log::info('Basic stats calculated', compact('totalClasses', 'totalStudents', 'avgAttendanceRate'));
 
         // Recent activities
+        \Log::info('Starting recent activities section');
         $recentActivities = collect();
         if ($classes->isNotEmpty()) {
             $classIds = $classes->pluck('id');
+            \Log::info('Loading activities', ['class_ids' => $classIds->toArray()]);
             $recentActivities = Activity::whereIn('class_id', $classIds)
                                       ->with(['student'])
                                       ->orderBy('date', 'desc')
@@ -60,6 +71,7 @@ class TeacherClassController extends Controller
                                               'status' => $activity->status
                                           ];
                                       });
+            \Log::info('Activities loaded', ['count' => $recentActivities->count()]);
         }
 
         // Classes data for dashboard
@@ -114,24 +126,33 @@ class TeacherClassController extends Controller
             ];
         }
 
-        return Inertia::render('Teacher/Dashboard', [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->roles->first()->display_name ?? 'Teacher'
-            ],
-            'statistics' => [
-                'total_classes' => $totalClasses,
-                'total_students' => $totalStudents,
-                'average_attendance' => round($avgAttendanceRate ?? 0, 2)
-            ],
-            'classes' => $classesData,
-            'recent_activities' => $recentActivities,
-            'exam_stats' => $examStats,
-            'schedule_stats' => $scheduleStats,
-            'canManageClasses' => $user->hasPermission('manage_classes') || $user->isSuperAdmin()
-        ]);
+            \Log::info('Preparing return data');
+            return Inertia::render('Teacher/Dashboard', [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->roles->first()->display_name ?? 'Teacher'
+                ],
+                'statistics' => [
+                    'total_classes' => $totalClasses,
+                    'total_students' => $totalStudents,
+                    'average_attendance' => round($avgAttendanceRate ?? 0, 2)
+                ],
+                'classes' => $classesData,
+                'recent_activities' => $recentActivities,
+                'exam_stats' => $examStats,
+                'schedule_stats' => $scheduleStats,
+                'canManageClasses' => $user->hasPermission('manage_classes') || $user->isSuperAdmin()
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Teacher dashboard error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => auth()->id()
+            ]);
+            throw $e;
+        }
     }
 
     public function index()
