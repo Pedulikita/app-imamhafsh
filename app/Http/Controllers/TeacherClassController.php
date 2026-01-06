@@ -29,24 +29,75 @@ class TeacherClassController extends Controller
             $user = Auth::user();
             \Log::info('User loaded', ['user_id' => $user->id, 'roles' => $user->roles->pluck('name')]);
             
-            // Simplified version - just return basic data
+            // Get teacher's classes with safe fallbacks
+            $query = TeacherClass::with(['teacher', 'grade', 'subject']);
+            
+            // If user is teacher, only show their classes
+            if ($user->hasRole('teacher')) {
+                $query->forTeacher($user->id);
+            }
+
+            $classes = $query->get();
+
+            // Calculate statistics with safe fallbacks
+            $totalClasses = $classes->count();
+            $totalStudents = $classes->sum('total_students') ?? 0;
+            $avgAttendanceRate = $classes->avg('attendance_rate') ?? 0;
+
+            // Classes data for dashboard with safe access
+            $classesData = $classes->map(function ($class) {
+                return [
+                    'id' => $class->id,
+                    'name' => $class->name,
+                    'grade_name' => optional($class->grade)->name ?? 'Unknown',
+                    'subject_name' => optional($class->subject)->name ?? 'Unknown',
+                    'total_students' => $class->total_students ?? 0,
+                    'attendance_rate' => round($class->attendance_rate ?? 0, 2),
+                    'status' => $class->status ?? 'active'
+                ];
+            });
+
+            // Safe recent activities - simplified
+            $recentActivities = collect();
+
+            // Safe exam stats
+            $examStats = [
+                'total_exams' => 0,
+                'active_exams' => 0,
+                'upcoming_exams' => 0,
+            ];
+
+            // Safe schedule stats
+            $scheduleStats = [
+                'classes_today' => 0,
+                'classes_this_week' => 0,
+            ];
+
+            // Safe permission check
+            $canManageClasses = false;
+            try {
+                $canManageClasses = $user->hasPermission('manage_classes') || $user->hasRole('super_admin');
+            } catch (\Exception $e) {
+                \Log::warning('Permission check failed', ['error' => $e->getMessage()]);
+            }
+
             return Inertia::render('Teacher/Dashboard', [
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => 'Teacher'
+                    'role' => optional($user->roles->first())->display_name ?? 'Teacher'
                 ],
                 'statistics' => [
-                    'total_classes' => 0,
-                    'total_students' => 0,
-                    'average_attendance' => 0
+                    'total_classes' => $totalClasses,
+                    'total_students' => $totalStudents,
+                    'average_attendance' => round($avgAttendanceRate, 2)
                 ],
-                'classes' => [],
-                'recent_activities' => [],
-                'exam_stats' => [],
-                'schedule_stats' => [],
-                'canManageClasses' => true
+                'classes' => $classesData,
+                'recent_activities' => $recentActivities,
+                'exam_stats' => $examStats,
+                'schedule_stats' => $scheduleStats,
+                'canManageClasses' => $canManageClasses
             ]);
         } catch (\Exception $e) {
             \Log::error('Teacher dashboard error', [
