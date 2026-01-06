@@ -9,6 +9,22 @@ import { FormEventHandler } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { type BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+// Predefined section keys that are used in home page
+const SECTION_KEYS = [
+    { value: 'about', label: 'About - Tentang Sekolah' },
+    { value: 'alasan', label: 'Alasan - Mengapa Memilih Kami' },
+    { value: 'pendidikan', label: 'Pendidikan - Kebijakan & Norma' },
+    { value: 'galeri', label: 'Galeri - Project Siswa' },
+    { value: 'artikel', label: 'Artikel - Artikel Terbaru' },
+];
 
 export default function Create() {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -59,9 +75,8 @@ export default function Create() {
 
                 <Alert>
                     <AlertDescription>
-                        <strong>Section Keys:</strong> Gunakan key seperti 'about',
-                        'alasan', 'pendidikan', 'galeri' untuk identifikasi section.
-                        Key harus unik.
+                        <strong>Section Keys:</strong> Pilih section key yang sesuai dengan area pada halaman home yang ingin Anda atur.
+                        Setiap section key hanya bisa digunakan sekali dan akan menggantikan konten default di halaman home.
                     </AlertDescription>
                 </Alert>
 
@@ -73,15 +88,21 @@ export default function Create() {
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="section_key">Section Key *</Label>
-                                <Input
-                                    id="section_key"
+                                <Select
                                     value={data.section_key}
-                                    onChange={(e) =>
-                                        setData('section_key', e.target.value)
-                                    }
-                                    placeholder="about"
-                                    required
-                                />
+                                    onValueChange={(value) => setData('section_key', value)}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Pilih section untuk halaman home" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {SECTION_KEYS.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 {errors.section_key && (
                                     <p className="text-sm text-red-500">
                                         {errors.section_key}

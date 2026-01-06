@@ -24,6 +24,7 @@ export default function Create() {
         main_content: '',
         features: [] as Array<{ title: string; description: string; icon?: string }>,
         statistics: [] as Array<{ label: string; value: string }>,
+        image: null as File | null,
         image_path: '',
         gallery_images: [] as string[],
         meta_title: '',
@@ -34,7 +35,9 @@ export default function Create() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post('/admin/literasi-content');
+        post('/admin/literasi-content', {
+            forceFormData: true,
+        });
     };
 
     const addFeature = () => {
@@ -152,7 +155,21 @@ export default function Create() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="image_path">Main Image Path</Label>
+                                <Label htmlFor="image">Upload Main Image</Label>
+                                <Input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setData('image', e.target.files?.[0] || null)}
+                                />
+                                <InputError message={errors.image} />
+                                <p className="text-sm text-muted-foreground">
+                                    Upload main image for literasi content. Max size: 2MB.
+                                </p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <Label htmlFor="image_path">Alternative Image Path</Label>
                                 <Input
                                     id="image_path"
                                     value={data.image_path}
@@ -160,6 +177,9 @@ export default function Create() {
                                     placeholder="/images/literasi-main.jpg"
                                 />
                                 <InputError message={errors.image_path} />
+                                <p className="text-sm text-muted-foreground">
+                                    Optional: Use existing image path if no file is uploaded.
+                                </p>
                             </div>
                         </CardContent>
                     </Card>

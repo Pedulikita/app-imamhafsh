@@ -102,8 +102,11 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
     // Generate image sources based on metadata and requirements
     const getImageSources = () => {
+        // Always use the original src as fallback
+        const fallbackSrc = src;
+        
         if (!parsedMetadata || parsedMetadata.fallback) {
-            return { src: src, srcSet: '' };
+            return { src: fallbackSrc, srcSet: '' };
         }
 
         let imageData;
@@ -118,7 +121,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         }
 
         if (!imageData) {
-            return { src: src, srcSet: '' };
+            return { src: fallbackSrc, srcSet: '' };
         }
 
         // Prefer WebP if supported, fallback to JPG
@@ -127,13 +130,13 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         
         if (webpPath && supportsWebP()) {
             return {
-                src: jpgPath || src,
+                src: jpgPath || fallbackSrc,
                 srcSet: `${webpPath} 1x${jpgPath ? `, ${jpgPath} 1x` : ''}`,
             };
         }
 
         return {
-            src: jpgPath || src,
+            src: jpgPath || fallbackSrc,
             srcSet: jpgPath ? `${jpgPath} 1x` : '',
         };
     };
@@ -152,7 +155,14 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         onLoad?.();
     };
 
-    const handleError = () => {
+    const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+        // If the current src failed and it's not already the fallback, try fallback
+        const target = e.currentTarget;
+        if (!target.src.includes('/images/logo.png')) {
+            target.src = '/images/logo.png';
+            return;
+        }
+        
         setHasError(true);
         onError?.();
     };

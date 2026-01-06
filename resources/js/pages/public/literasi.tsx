@@ -17,6 +17,7 @@ interface LiterasiContent {
         value: string;
     }>;
     image_path: string;
+    image_url: string;
     gallery_images: string[];
     meta_title: string;
     meta_description: string;
@@ -90,9 +91,13 @@ export default function Literasi({ content }: Props) {
                     </div>
                     <div>
                         <img
-                            src={literasiContent.image_path}
+                            src={literasiContent.image_url || literasiContent.image_path}
                             alt="Siswa Membaca di Perpustakaan"
                             className="h-full w-full rounded-xl object-cover shadow-lg"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/images/Prestasi-Tim-Literasi-Sekolah-SMP-Bina-Qurani-Islamic-Boarding-School-Kota-Bogor-768x768.jpeg';
+                            }}
                         />
                     </div>
                 </div>
@@ -145,9 +150,9 @@ export default function Literasi({ content }: Props) {
                 {/* Additional Content Section */}
                 <div className="space-y-6 text-justify text-slate-600">
                     <p>
-                        Melalui BQ Library, BQ Islamic Boarding School menjalankan tahapan demi tahapan pelaksanaan literasi sekolah. Tahap pertama dari
-                        pelaksanaan Gerakan Literasi Sekolah yaitu pembiasaan siswa untuk membaca buku. Pada tahap pertama, seluruh santri BQ Islamic Boarding
-                        School dijadwalkan secara rutin untuk berkunjung ke BQ Library dan membaca buku selama 30 sampai 60 menit setiap harinya. Tahapan ini
+                        Melalui imam hafsh Library, Imam Hafsh Islamic Boarding School menjalankan tahapan demi tahapan pelaksanaan literasi sekolah. Tahap pertama dari
+                        pelaksanaan Gerakan Literasi Sekolah yaitu pembiasaan siswa untuk membaca buku. Pada tahap pertama, seluruh santri Imam Hafsh Islamic Boarding
+                        School dijadwalkan secara rutin untuk berkunjung ke imam hafsh Library dan membaca buku selama 30 sampai 60 menit setiap harinya. Tahapan ini
                         merupakan tahap pembiasaan, agar santri terbiasa dalam berkunjung ke perpustakaan untuk membaca buku.
                     </p>
                     <p>
@@ -157,7 +162,7 @@ export default function Literasi({ content }: Props) {
                         pelajaran.
                     </p>
                     <p>
-                        BQ Islamic Boarding School terus memberikan perhatian dan pengawasan lebih demi terlaksananya seluruh tahapan demi tahapan Gerakan
+                        Imam Hafsh Islamic Boarding School terus memberikan perhatian dan pengawasan lebih demi terlaksananya seluruh tahapan demi tahapan Gerakan
                         Literasi Sekolah. Semoga melalui Gerakan Literasi Sekolah ini akan lahir generasi-generasi penerus bangsa yang berintelektual tinggi, berbudi
                         pekerti luhur, dan memiliki adab-adab qurani.
                     </p>

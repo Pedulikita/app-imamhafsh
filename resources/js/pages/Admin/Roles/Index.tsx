@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Edit2Icon, TrashIcon, ShieldIcon, Shield } from 'lucide-react';
+import { Edit2Icon, TrashIcon, ShieldIcon, Shield, Users } from 'lucide-react';
 import { dashboard } from '@/routes';
 
 interface Permission {
@@ -77,12 +77,20 @@ export default function RolesIndex() {
               <h1 className="text-2xl font-bold tracking-tight">Roles</h1>
               <p className="text-sm text-muted-foreground">Kelola roles dan permissions pengguna</p>
             </div>
-            <Button asChild>
-              <Link href="/roles/create">
-                <ShieldIcon className="h-4 w-4 mr-2" />
-                Tambah Role
-              </Link>
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" asChild>
+                <Link href="/users">
+                  <Users className="h-4 w-4 mr-2" />
+                  User Management
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/roles/create">
+                  <ShieldIcon className="h-4 w-4 mr-2" />
+                  Tambah Role
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="border rounded-xl border-sidebar-border/70">

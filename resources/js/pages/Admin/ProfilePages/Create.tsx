@@ -103,36 +103,27 @@ export default function CreateProfilePage() {
 
     if (image) {
       data.append('image', image);
-      console.log('Appending main image:', image.name);
     }
     if (heroImage) {
       data.append('hero_image', heroImage);
-      console.log('Appending hero image:', heroImage.name);
     }
     if (contentImage) {
       data.append('content_image', contentImage);
-      console.log('Appending content image:', contentImage.name);
     }
     if (contentThumbnail) {
       data.append('content_thumbnail', contentThumbnail);
-      console.log('Appending content thumbnail:', contentThumbnail.name);
     }
     if (sidebarImage) {
       data.append('sidebar_image', sidebarImage);
-      console.log('Appending sidebar image:', sidebarImage.name);
     }
-
-    console.log('Form data being sent:', Array.from(data.entries()));
 
     router.post('/admin/profile-pages', data, {
       forceFormData: true,
       onSuccess: () => {
-        console.log('Profile page created successfully');
         router.visit('/admin/profile-pages');
       },
       onError: (errs) => {
         setErrors(errs as any);
-        console.error('Create Profile Page errors:', errs);
       },
     });
   };

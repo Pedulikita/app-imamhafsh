@@ -7,6 +7,13 @@ use Laravel\Fortify\Features;
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Debug route for testing user edit
+Route::get('/test-edit', function() {
+    return view('test-edit');
+});
+
+Route::view('/test-edit-form', 'test-edit');
+
 Route::get('/about', [\App\Http\Controllers\PublicPageController::class, 'about'])->name('about');
 Route::get('/nilai', [\App\Http\Controllers\PublicPageController::class, 'nilai'])->name('nilai');
 Route::get('/mutu', [\App\Http\Controllers\PublicPageController::class, 'mutu'])->name('mutu');
@@ -66,6 +73,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('roles/remove', [\App\Http\Controllers\RoleController::class, 'removeFromUser'])->name('roles.remove');
         
         Route::resource('permissions', \App\Http\Controllers\PermissionController::class)->only(['index', 'store', 'update', 'destroy']);
+        
+        // User Management Routes
+        Route::resource('users', \App\Http\Controllers\UserController::class);
+        Route::post('users/assign-role', [\App\Http\Controllers\UserController::class, 'assignRole'])->name('users.assign-role');
+        Route::delete('users/remove-role', [\App\Http\Controllers\UserController::class, 'removeRole'])->name('users.remove-role');
     });
 
     // Pages Management (Super Admin and Editor can manage)
@@ -237,6 +249,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Teacher Dashboard
         Route::get('dashboard', [TeacherClassController::class, 'dashboard'])
             ->name('dashboard');
+            
+        // Teacher Communication (temporary redirects to dashboard)
+        Route::get('messages', [TeacherClassController::class, 'dashboard'])
+            ->name('messages');
+        Route::get('announcements', [TeacherClassController::class, 'dashboard'])
+            ->name('announcements');
+        Route::get('parent-communication', [TeacherClassController::class, 'dashboard'])
+            ->name('parent-communication');
             
         // Teacher Class Management
         Route::resource('classes', TeacherClassController::class);

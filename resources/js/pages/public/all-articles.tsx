@@ -8,7 +8,7 @@ type Article = {
     id: number;
     title: string;
     slug: string;
-    featured_image: string;
+    featured_image: string | null;
     image_metadata?: string;
     category: string;
     date: string;
@@ -28,6 +28,9 @@ export default function AllArticles({ articles = [] }: Props) {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
     const perPage = 12;
+
+    // Debug: Log articles data
+    console.log('Articles data:', articles);
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -99,12 +102,12 @@ export default function AllArticles({ articles = [] }: Props) {
                         >
                             <div className="relative h-40 w-full overflow-hidden bg-slate-100 sm:h-48">
                                 <OptimizedImage
-                                    src={a.featured_image || a.image}
+                                    src={a.featured_image || "/images/logo.png"}
                                     alt={a.title}
                                     metadata={a.image_metadata}
-                                    className="h-full w-full transition-transform duration-500 hover:scale-105"
+                                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                                     size="medium"
-                                    lazy={true}
+                                    lazy={false}
                                 />
                                 <div className="absolute left-3 top-3 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
                                     {a.category}

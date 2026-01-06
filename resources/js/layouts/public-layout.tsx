@@ -391,7 +391,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                     <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            © {new Date().getFullYear()} SMP BQ IBS. All rights
+                            © {new Date().getFullYear()} IMAM HAFSH ISLAMIC BOARDING SCHOOL. All rights
                             reserved.
                         </div>
                         <div className="flex items-center gap-3">

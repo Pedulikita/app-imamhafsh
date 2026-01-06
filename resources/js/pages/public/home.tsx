@@ -359,8 +359,8 @@ import { useEffect, useState } from 'react';
                 {/* end hero section */}
             </section>
             {/* way as section */}
-            <section>
-                <img src="/images/Banner-begarund.png" alt="" />
+            <section className="w-full">
+                <img src="/images/Banner-begarund.png" alt="" className="w-full" />
             </section>
 
             <section id="program" className="bg-white">
@@ -425,10 +425,19 @@ import { useEffect, useState } from 'react';
                         <div className="lg:col-span-6">
                             <div className="mx-auto max-w-lg">
                                 <img
-                                    src={homeSections?.about?.image ? `/${homeSections.about.image}` : "/images/PRESTAS.png"}
+                                    src={
+                                        homeSections?.about?.image_url || 
+                                        (homeSections?.about?.image ? 
+                                            (homeSections.about.image.startsWith('/storage/') ? homeSections.about.image : `/storage/${homeSections.about.image}`) 
+                                            : "/images/PRESTAS.png")
+                                    }
                                     alt={homeSections?.about?.image_alt || "Prestasi santri"}
                                     className="h-auto w-full object-contain"
                                     loading="lazy"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = '/images/PRESTAS.png';
+                                    }}
                                 />
                             </div>
                         </div>
@@ -505,10 +514,19 @@ import { useEffect, useState } from 'react';
                         <div className="lg:col-span-6">
                             <div className="mx-auto max-w-xl">
                                 <img
-                                    src={homeSections?.alasan?.image ? `/${homeSections.alasan.image}` : "/images/PRESTAS.png"}
+                                    src={
+                                        homeSections?.alasan?.image_url || 
+                                        (homeSections?.alasan?.image ? 
+                                            (homeSections.alasan.image.startsWith('/storage/') ? homeSections.alasan.image : `/storage/${homeSections.alasan.image}`) 
+                                            : "/images/PRESTAS.png")
+                                    }
                                     alt={homeSections?.alasan?.image_alt || "Santri berprestasi"}
                                     className="h-auto w-full object-contain"
                                     loading="lazy"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = '/images/PRESTAS.png';
+                                    }}
                                 />
                             </div>
                         </div>
@@ -627,10 +645,19 @@ import { useEffect, useState } from 'react';
                                 <div className="pointer-events-none absolute -bottom-12 -left-10 size-52 rounded-full bg-sky-200/70 blur-3xl" />
                                 <div className="relative overflow-hidden rounded-[28px] border border-neutral-200 bg-white shadow-sm">
                                     <img
-                                        src={homeSections?.pendidikan?.image ? `/${homeSections.pendidikan.image}` : "/images/Pendidikan.jpg"}
+                                        src={
+                                            homeSections?.pendidikan?.image_url || 
+                                            (homeSections?.pendidikan?.image ? 
+                                                (homeSections.pendidikan.image.startsWith('/storage/') ? homeSections.pendidikan.image : `/storage/${homeSections.pendidikan.image}`) 
+                                                : "/images/Pendidikan.jpg")
+                                        }
                                         alt={homeSections?.pendidikan?.image_alt || "Lingkungan pendidikan"}
                                         className="h-auto w-full object-cover"
                                         loading="lazy"
+                                        onError={(e) => {
+                                            const target = e.target as HTMLImageElement;
+                                            target.src = '/images/Pendidikan.jpg';
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -676,7 +703,9 @@ import { useEffect, useState } from 'react';
                                         Project Siswa
                                     </h3>
                                     <p className="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
-                                        Project siswa merupakan karya santri Bina Qurani,
+                                        Project siswa merupakan karya santri Imam Hafsh
+                                        Boarding School yang dihasilkan dari proses
+                                        pembelajaran berbasis proyek (Project Based Learning),
                                         fokus dalam proyek ini adalah bertujuan agar setiap
                                         peserta didik dapat mengembangkan minat dan bakat,
                                         serta keterampilan melalui proses perencanaan dan
@@ -718,10 +747,19 @@ import { useEffect, useState } from 'react';
                                     <div className="absolute left-1/2 top-1/2 size-[236px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-sky-200/70 to-indigo-200/70" />
                                     <div className="absolute left-1/2 top-1/2 size-[188px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border border-white/70 bg-white shadow-sm">
                                         <img
-                                            src={homeSections?.galeri?.image ? `/${homeSections.galeri.image}` : "/images/PRESTAS.png"}
+                                            src={
+                                                homeSections?.galeri?.image_url || 
+                                                (homeSections?.galeri?.image ? 
+                                                    (homeSections.galeri.image.startsWith('/storage/') ? homeSections.galeri.image : `/storage/${homeSections.galeri.image}`) 
+                                                    : "/images/PRESTAS.png")
+                                            }
                                             alt={homeSections?.galeri?.image_alt || "Project siswa"}
                                             className="h-full w-full object-cover"
                                             loading="lazy"
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = '/images/PRESTAS.png';
+                                            }}
                                         />
                                     </div>
 
@@ -773,10 +811,19 @@ import { useEffect, useState } from 'react';
                         <div className="lg:col-span-6">
                             <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
                                 <img
-                                    src={homeSections?.artikel?.image ? `/${homeSections.artikel.image}` : "/images/PRESTAS.png"}
+                                    src={
+                                        homeSections?.artikel?.image_url || 
+                                        (homeSections?.artikel?.image ? 
+                                            (homeSections.artikel.image.startsWith('/storage/') ? homeSections.artikel.image : `/storage/${homeSections.artikel.image}`) 
+                                            : "/images/PRESTAS.png")
+                                    }
                                     alt={homeSections?.artikel?.image_alt || "Artikel pilihan"}
                                     className="h-auto w-full object-cover"
                                     loading="lazy"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = '/images/PRESTAS.png';
+                                    }}
                                 />
                             </div>
                         </div>
@@ -829,11 +876,6 @@ import { useEffect, useState } from 'react';
                                                 <div className="mt-2 text-sm font-semibold text-neutral-900 sm:text-base">
                                                     {article.title}
                                                 </div>
-                                                {article.excerpt && (
-                                                    <div className="mt-1 text-sm text-neutral-600">
-                                                        {article.excerpt}
-                                                    </div>
-                                                )}
                                                 <a href={`/articles/${article.slug}`} className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800">
                                                     Read <ArrowRight className="size-4" />
                                                 </a>

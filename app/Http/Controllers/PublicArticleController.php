@@ -55,11 +55,30 @@ class PublicArticleController extends Controller
             
             $articleData = $this->formatArticleForPublic($article, true);
 
+            // Generate meta data for social sharing
+            $baseUrl = 'https://imamhafsh.com';
+            $shareUrl = "{$baseUrl}/articles/{$article->slug}";
+            
+            // Construct image URL for sharing
+            $shareImage = $baseUrl . '/images/logo.png'; // default fallback
+            if ($article->featured_image) {
+                if (str_starts_with($article->featured_image, 'http')) {
+                    $shareImage = $article->featured_image;
+                } else {
+                    $imagePath = ltrim($article->featured_image, '/');
+                    $shareImage = "{$baseUrl}/{$imagePath}";
+                }
+            }
+
             // Get sidebar articles with optimized queries
             $popularArticles = $this->getPopularArticles($article->id);
             $trendingArticles = $this->getTrendingArticles($article->id);
             $latestArticles = $this->getLatestArticles($article->id);
             $relatedArticles = $this->getRelatedArticles($article->id, $article->category);
+
+            // Simple meta data
+            $metaTitle = $article->title . ' - Imam Hafsh Islamic Boarding School';
+            $metaDescription = $article->excerpt ?: $article->title;
 
             return Inertia::render('public/article-detail', [
                 'article' => $articleData,
@@ -67,8 +86,51 @@ class PublicArticleController extends Controller
                 'trendingArticles' => $trendingArticles,
                 'latestArticles' => $latestArticles,
                 'relatedArticles' => $relatedArticles,
+            ])
+            ->withViewData([
+                'metaTitle' => $metaTitle,
+                'metaDescription' => $metaDescription,
+                'metaImage' => $shareImage,
+                'metaUrl' => $shareUrl
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // For debugging - create test meta tags even for missing articles
+            if ($slug === 'test' || $slug === 'tes') {
+                $baseUrl = 'https://imamhafsh.com';
+                $metaTitle = 'Test Article - Imam Hafsh Islamic Boarding School';
+                $metaDescription = 'This is a test article for debugging meta tags functionality';
+                $shareImage = $baseUrl . '/images/logo.png';
+                $shareUrl = "{$baseUrl}/articles/{$slug}";
+                
+                return Inertia::render('public/article-detail', [
+                    'article' => [
+                        'id' => 999,
+                        'title' => 'Test Article',
+                        'slug' => $slug,
+                        'content' => '<p>This is a test article for debugging meta tags.</p>',
+                        'excerpt' => 'Test article for debugging',
+                        'category' => 'Test',
+                        'date' => now()->format('d M Y'),
+                        'authorName' => 'Test Author',
+                        'authorAvatar' => '/images/logo.png',
+                        'readTime' => '1',
+                        'tags' => ['test'],
+                        'views' => 0,
+                        'featured_image' => '/images/logo.png',
+                        'image_metadata' => null,
+                    ],
+                    'popularArticles' => [],
+                    'trendingArticles' => [],
+                    'latestArticles' => [],
+                    'relatedArticles' => [],
+                ])
+                ->withViewData([
+                    'metaTitle' => $metaTitle,
+                    'metaDescription' => $metaDescription,
+                    'metaImage' => $shareImage,
+                    'metaUrl' => $shareUrl
+                ]);
+            }
             abort(404, 'Artikel tidak ditemukan');
         } catch (\Exception $e) {
             \Log::error('Error showing article: ' . $e->getMessage());
@@ -85,7 +147,7 @@ class PublicArticleController extends Controller
             'id' => $article->id,
             'title' => e($article->title), // XSS protection
             'slug' => $article->slug,
-            'featured_image' => $article->featured_image ?? '/images/logo.png',
+            'featured_image' => $article->featured_image, // Path sudah benar dari database
             'image_metadata' => $article->image_metadata,
             'category' => $article->category ? e($article->category->name) : e($article->category ?? 'General'),
             'date' => $article->published_at ? $article->published_at->format('d M Y') : '',
@@ -95,9 +157,6 @@ class PublicArticleController extends Controller
             'readTime' => $this->calculateReadTime($article->content ?? ''),
             'tags' => $this->sanitizeTags($article->tags),
             'views' => (int) ($article->views ?? 0),
-            
-            // Legacy field for backward compatibility
-            'image' => $article->featured_image ?? '/images/logo.png',
         ];
 
         if ($includeContent) {

@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('profile_pages', function (Blueprint $table) {
-            //
+            $table->string('hero_image')->nullable()->after('image');
+            $table->string('content_image')->nullable()->after('hero_image');
+            $table->string('content_thumbnail')->nullable()->after('content_image');
+            $table->string('sidebar_image')->nullable()->after('content_thumbnail');
+            $table->string('sidebar_bg_color')->nullable()->after('sidebar_image');
+            $table->string('sidebar_header_color')->nullable()->after('sidebar_bg_color');
+            $table->string('sidebar_title')->nullable()->after('sidebar_header_color');
         });
     }
 
@@ -22,7 +28,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('profile_pages', function (Blueprint $table) {
-            //
+            $table->dropColumn([
+                'hero_image',
+                'content_image', 
+                'content_thumbnail',
+                'sidebar_image',
+                'sidebar_bg_color',
+                'sidebar_header_color',
+                'sidebar_title'
+            ]);
         });
     }
 };

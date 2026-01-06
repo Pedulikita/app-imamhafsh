@@ -33,6 +33,7 @@ class LiterasiContentRequest extends FormRequest
             'statistics' => 'nullable|array',
             'statistics.*.label' => 'required|string|max:255',
             'statistics.*.value' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image_path' => 'nullable|string|max:255',
             'gallery_images' => 'nullable|array',
             'gallery_images.*' => 'string|max:255',

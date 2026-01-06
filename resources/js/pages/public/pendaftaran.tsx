@@ -140,19 +140,21 @@ export default function Pendaftaran() {
                             data dan jadwal seleksi rapi.
                         </p>
 
-                        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <div className="relative z-10 mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
                             <Button
                                 asChild
-                                className="rounded-full bg-amber-400 px-6 py-6 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
+                                className="relative cursor-pointer rounded-full bg-amber-400 px-6 py-6 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
+                                onClick={() => console.log('Button pendaftaran clicked')}
                             >
-                                <a href="https://kolaborasitemanbaik.com/ppdb/imam-hafsh-p6swYI" target="_blank" rel="noopener noreferrer">Mulai Pendaftaran</a>
+                                <a href="https://kolaborasitemanbaik.com/ppdb/imam-hafsh-p6swYI" target="_blank" rel="noopener noreferrer" className="cursor-pointer">Mulai Pendaftaran</a>
                             </Button>
                             <Button
                                 asChild
                                 variant="secondary"
-                                className="rounded-full bg-white/10 px-6 py-6 text-sm font-semibold text-white hover:bg-white/15"
+                                className="relative cursor-pointer rounded-full bg-white/10 px-6 py-6 text-sm font-semibold text-white hover:bg-white/15"
+                                onClick={() => console.log('Button biaya clicked')}
                             >
-                                <a href="#biaya">Lihat Biaya</a>
+                                <a href="#biaya" className="cursor-pointer">Lihat Biaya</a>
                             </Button>
                         </div>
 
@@ -253,9 +255,9 @@ export default function Pendaftaran() {
                                 ))}
                             </div>
 
-                            <div className="mt-8">
-                                <Button asChild className="rounded-full">
-                                    <a href="#kontak">Hubungi Admin PPDB</a>
+                            <div className="relative z-10 mt-8">
+                                <Button asChild className="cursor-pointer rounded-full">
+                                    <a href="#kontak" className="cursor-pointer">Hubungi Admin PPDB</a>
                                 </Button>
                             </div>
                         </div>
@@ -351,9 +353,9 @@ export default function Pendaftaran() {
                                     <Button
                                         asChild
                                         variant="secondary"
-                                        className="w-full rounded-full"
+                                        className="relative z-10 w-full cursor-pointer rounded-full"
                                     >
-                                        <a href="#kontak">Tanya Admin</a>
+                                        <a href="#kontak" className="cursor-pointer">Tanya Admin</a>
                                     </Button>
                                 </div>
                             </div>
@@ -457,9 +459,9 @@ export default function Pendaftaran() {
                                 Jika pertanyaan kamu belum terjawab, langsung
                                 hubungi admin PPDB.
                             </p>
-                            <div className="mt-6">
-                                <Button asChild className="rounded-full">
-                                    <a href="#kontak">Kontak Admin</a>
+                            <div className="relative z-10 mt-6">
+                                <Button asChild className="cursor-pointer rounded-full">
+                                    <a href="#kontak" className="cursor-pointer">Kontak Admin</a>
                                 </Button>
                             </div>
                         </div>

@@ -40,6 +40,7 @@ import {
     CheckSquare,
     School,
     Heart,
+    UserCog,
     type LucideIcon
 } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -204,6 +205,11 @@ const adminNavItems: NavItemWithChildren[] = [
         icon: Shield,
         isActive: true,
         items: [
+            {
+                title: 'Users',
+                href: '/users',
+                icon: UserCog,
+            },
             {
                 title: 'Roles',
                 href: '/roles',

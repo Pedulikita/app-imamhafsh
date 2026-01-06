@@ -37,24 +37,28 @@ interface Props {
 }
 
 export default function Edit({ content }: Props) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         title: content.title,
         subtitle: content.subtitle || '',
         description: content.description || '',
         main_content: content.main_content,
         features: content.features || [],
         statistics: content.statistics || [],
+        image: null as File | null,
         image_path: content.image_path || '',
         gallery_images: content.gallery_images || [],
         meta_title: content.meta_title || '',
         meta_description: content.meta_description || '',
         is_active: content.is_active,
         sort_order: content.sort_order,
+        _method: 'PUT',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(`/admin/literasi-content/${content.id}`);
+        post(`/admin/literasi-content/${content.id}`, {
+            forceFormData: true,
+        });
     };
 
     const addFeature = () => {
@@ -171,8 +175,41 @@ export default function Edit({ content }: Props) {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
+                            {content.image_path && (
+                                <div className="space-y-2">
+                                    <Label>Current Image</Label>
+                                    <div className="w-32 h-24 rounded-lg overflow-hidden border border-border">
+                                        <img
+                                            src={content.image_path.startsWith('/') 
+                                                ? content.image_path 
+                                                : `/storage/${content.image_path}`}
+                                            alt="Current image"
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = '/images/placeholder.png';
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                            
                             <div className="space-y-2">
-                                <Label htmlFor="image_path">Main Image Path</Label>
+                                <Label htmlFor="image">Upload New Image</Label>
+                                <Input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setData('image', e.target.files?.[0] || null)}
+                                />
+                                <InputError message={errors.image} />
+                                <p className="text-sm text-muted-foreground">
+                                    Upload new image to replace current one. Max size: 2MB.
+                                </p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <Label htmlFor="image_path">Alternative Image Path</Label>
                                 <Input
                                     id="image_path"
                                     value={data.image_path}
@@ -180,6 +217,9 @@ export default function Edit({ content }: Props) {
                                     placeholder="/images/literasi-main.jpg"
                                 />
                                 <InputError message={errors.image_path} />
+                                <p className="text-sm text-muted-foreground">
+                                    Optional: Manually set image path if no file is uploaded.
+                                </p>
                             </div>
                         </CardContent>
                     </Card>

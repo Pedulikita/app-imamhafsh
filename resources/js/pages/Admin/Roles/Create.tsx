@@ -16,17 +16,26 @@ interface Permission {
   group: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  email_verified_at?: string;
+}
+
 interface PageProps {
   permissions: Record<string, Permission[]>;
+  users: User[];
 }
 
 export default function RolesCreate() {
-  const { permissions } = usePage<PageProps>().props;
+  const { permissions, users } = usePage<PageProps>().props;
   const [formData, setFormData] = useState({
     name: '',
     display_name: '',
     description: '',
     permissions: [] as number[],
+    users: [] as number[],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -52,6 +61,25 @@ export default function RolesCreate() {
       permissions: allSelected
         ? prev.permissions.filter((id) => !groupIds.includes(id))
         : [...new Set([...prev.permissions, ...groupIds])],
+    }));
+  };
+
+  const toggleUser = (userId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      users: prev.users.includes(userId)
+        ? prev.users.filter((id) => id !== userId)
+        : [...prev.users, userId],
+    }));
+  };
+
+  const toggleAllUsers = () => {
+    const allUserIds = users.map(u => u.id);
+    const allSelected = allUserIds.every(id => formData.users.includes(id));
+
+    setFormData((prev) => ({
+      ...prev,
+      users: allSelected ? [] : allUserIds,
     }));
   };
 
@@ -158,6 +186,57 @@ export default function RolesCreate() {
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Assign Users</CardTitle>
+                <CardDescription>Pilih users yang akan mendapat role ini (opsional)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {users.length === 0 ? (
+                  <p className="text-gray-500 text-sm">Tidak ada user yang tersedia.</p>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-lg">Available Users</h3>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={toggleAllUsers}
+                      >
+                        {users.every((u) => formData.users.includes(u.id))
+                          ? 'Deselect All'
+                          : 'Select All'}
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {users.map((user) => (
+                        <div key={user.id} className="flex items-start space-x-2 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                          <Checkbox
+                            id={`user-${user.id}`}
+                            checked={formData.users.includes(user.id)}
+                            onCheckedChange={() => toggleUser(user.id)}
+                          />
+                          <div className="grid gap-1.5 leading-none flex-1">
+                            <label
+                              htmlFor={`user-${user.id}`}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                            >
+                              {user.name}
+                            </label>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            {user.email_verified_at && (
+                              <span className="text-xs text-green-600">✓ Verified</span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

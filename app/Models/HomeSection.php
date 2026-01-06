@@ -53,4 +53,30 @@ class HomeSection extends Model
     {
         return $query->where('section_key', $key);
     }
+
+    /**
+     * Get the image URL attribute.
+     */
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        $baseUrl = config('app.url', 'https://imamhafsh.com');
+        $image = $this->image;
+
+        // If already has full URL, return as is
+        if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+            return $image;
+        }
+        
+        // If already has /storage/ prefix (data lama), return dengan base URL tanpa menambah lagi
+        if (str_starts_with($image, '/storage/')) {
+            return $baseUrl . $image;
+        }
+
+        // Data baru: add /storage/ prefix
+        return $baseUrl . '/storage/' . $image;
+    }
 }

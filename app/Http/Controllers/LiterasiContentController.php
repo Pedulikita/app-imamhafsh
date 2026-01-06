@@ -34,7 +34,18 @@ class LiterasiContentController extends Controller
      */
     public function store(LiterasiContentRequest $request)
     {
-        LiterasiContent::create($request->validated());
+        $validated = $request->validated();
+        
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('literasi', 'public');
+            $validated['image_path'] = $path;
+        }
+        
+        // Remove image file from validated data to avoid column error
+        unset($validated['image']);
+        
+        LiterasiContent::create($validated);
 
         return redirect()->route('literasi-content.index')
             ->with('success', 'Literasi content created successfully.');
@@ -55,7 +66,26 @@ class LiterasiContentController extends Controller
      */
     public function update(LiterasiContentRequest $request, LiterasiContent $literasiContent)
     {
-        $literasiContent->update($request->validated());
+        $validated = $request->validated();
+        
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($literasiContent->image_path && \Storage::disk('public')->exists($literasiContent->image_path)) {
+                \Storage::disk('public')->delete($literasiContent->image_path);
+            }
+            
+            $path = $request->file('image')->store('literasi', 'public');
+            $validated['image_path'] = $path;
+        } else {
+            // Keep existing image if no new file uploaded
+            unset($validated['image_path']);
+        }
+        
+        // Remove image file from validated data
+        unset($validated['image']);
+        
+        $literasiContent->update($validated);
 
         return redirect()->route('literasi-content.index')
             ->with('success', 'Literasi content updated successfully.');
@@ -66,6 +96,11 @@ class LiterasiContentController extends Controller
      */
     public function destroy(LiterasiContent $literasiContent)
     {
+        // Delete image if exists
+        if ($literasiContent->image_path && \Storage::disk('public')->exists($literasiContent->image_path)) {
+            \Storage::disk('public')->delete($literasiContent->image_path);
+        }
+        
         $literasiContent->delete();
 
         return redirect()->route('literasi-content.index')

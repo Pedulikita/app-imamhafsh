@@ -21,6 +21,7 @@ interface HomeSection {
     subtitle: string | null;
     content: string | null;
     image: string | null;
+    image_url: string | null; // Add image_url accessor
     badge_text: string | null;
     button_text: string | null;
     button_link: string | null;
@@ -104,9 +105,13 @@ export default function Index({ sections }: Props) {
                                             <div className="w-16 h-16 rounded-md overflow-hidden bg-muted flex items-center justify-center">
                                                 {section.image ? (
                                                     <img
-                                                        src={`/${section.image}`}
+                                                        src={
+                                                            section.image_url || 
+                                                            (section.image.startsWith('/storage/') ? section.image : `/storage/${section.image}`)
+                                                        }
                                                         alt={section.title}
                                                         className="h-full w-full object-cover"
+                                                        onError={() => {}}
                                                     />
                                                 ) : (
                                                     <Image className="h-6 w-6 text-muted-foreground" />

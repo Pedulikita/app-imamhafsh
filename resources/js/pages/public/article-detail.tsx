@@ -7,6 +7,7 @@ import { useState } from 'react';
 type Article = {
     id: number;
     title: string;
+    slug?: string;
     content: string;
     featured_image: string;
     image_metadata?: string;
@@ -38,9 +39,50 @@ export default function ArticleDetail({
     const [activeTab, setActiveTab] = useState('popular');
     const [copied, setCopied] = useState(false);
     
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+    // Use proper URL construction for server-side rendering
+    const baseUrl = 'https://imamhafsh.com';
+    const shareUrl = `${baseUrl}/articles/${article.slug || article.id}`;
     const shareTitle = article.title;
-    const shareImage = article.featured_image.startsWith('http') ? article.featured_image : `${typeof window !== 'undefined' ? window.location.origin : ''}${article.featured_image}`;
+    
+    // Construct proper absolute URL for image sharing
+    const getShareImageUrl = () => {
+        // For social media sharing, we need a direct, accessible image URL
+        // Facebook needs a direct path to image, not OptimizedImage processed paths
+        
+        if (article.featured_image) {
+            // If already absolute URL, use as is
+            if (article.featured_image.startsWith('http://') || article.featured_image.startsWith('https://')) {
+                return article.featured_image;
+            }
+            
+            // For relative paths, construct absolute URL
+            let imagePath = article.featured_image;
+            
+            // Remove any leading slash to avoid double slashes
+            if (imagePath.startsWith('/')) {
+                imagePath = imagePath.substring(1);
+            }
+            
+            // Construct full URL
+            return `${baseUrl}/${imagePath}`;
+        }
+        
+        // Fallback to a guaranteed accessible logo
+        return `${baseUrl}/images/logo.png`;
+    };
+    
+    // Get the share image URL
+    const shareImageUrl = getShareImageUrl();
+    
+    // Debug: Log sharing URLs (only in development)
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+        console.log('Article sharing:', {
+            title: article.title,
+            url: shareUrl,
+            image: shareImageUrl,
+            hasFeatureImage: !!article.featured_image
+        });
+    }
 
     const shareLinks = {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
@@ -69,31 +111,34 @@ export default function ArticleDetail({
         <PublicLayout>
             <Head title={`${article.title} - Imam Hafsh Islamic Boarding School`}>
                 {/* Basic Meta Tags */}
-                <meta name="description" content={article.excerpt} />
-                <meta name="keywords" content={article.tags.join(', ')} />
+                <meta name="description" content={article.excerpt || article.title} />
+                <meta name="keywords" content={article.tags?.join(', ') || article.title} />
                 <link rel="canonical" href={shareUrl} />
                 
                 {/* Open Graph Meta Tags (Facebook, LinkedIn, etc.) */}
                 <meta property="og:title" content={article.title} />
-                <meta property="og:description" content={article.excerpt} />
-                <meta property="og:image" content={shareImage} />
+                <meta property="og:description" content={article.excerpt || article.title} />
+                <meta property="og:image" content={shareImageUrl} />
+                <meta property="og:image:secure_url" content={shareImageUrl} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta property="og:image:alt" content={article.title} />
+                <meta property="og:image:type" content="image/jpeg" />
                 <meta property="og:url" content={shareUrl} />
                 <meta property="og:type" content="article" />
                 <meta property="og:site_name" content="Imam Hafsh Islamic Boarding School" />
                 <meta property="og:locale" content="id_ID" />
-                <meta property="article:author" content={article.authorName} />
+                
+                <meta property="article:author" content={article.authorName || 'Imam Hafsh'} />
                 <meta property="article:published_time" content={article.date} />
-                <meta property="article:section" content={article.category} />
-                <meta property="article:tag" content={article.tags.join(', ')} />
+                <meta property="article:section" content={article.category || 'Artikel'} />
+                <meta property="article:tag" content={article.tags?.join(', ') || article.title} />
                 
                 {/* Twitter Card Meta Tags */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={article.title} />
-                <meta name="twitter:description" content={article.excerpt} />
-                <meta name="twitter:image" content={shareImage} />
+                <meta name="twitter:description" content={article.excerpt || article.title} />
+                <meta name="twitter:image" content={shareImageUrl} />
                 <meta name="twitter:image:alt" content={article.title} />
                 <meta name="twitter:site" content="@imamhafsh" />
                 <meta name="twitter:creator" content="@imamhafsh" />
@@ -103,24 +148,29 @@ export default function ArticleDetail({
                 <meta name="robots" content="index, follow" />
                 <meta name="article:modified_time" content={article.date} />
                 
+                {/* WhatsApp and other social platforms */}
+                <meta property="og:image:url" content={shareImageUrl} />
+                <meta name="image" content={shareImageUrl} />
+                <meta name="thumbnail" content={shareImageUrl} />
+                
                 {/* Schema.org structured data */}
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "Article",
                         "headline": article.title,
-                        "image": [shareImage],
+                        "image": [shareImageUrl],
                         "author": {
                             "@type": "Person",
                             "name": article.authorName,
-                            "url": `${typeof window !== 'undefined' ? window.location.origin : ''}/team`
+                            "url": `${baseUrl}/team`
                         },
                         "publisher": {
                             "@type": "Organization",
                             "name": "Imam Hafsh Islamic Boarding School",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": `${typeof window !== 'undefined' ? window.location.origin : ''}/images/logo.png`
+                                "url": `${baseUrl}/images/logo.png`
                             }
                         },
                         "datePublished": article.date,
@@ -199,8 +249,8 @@ export default function ArticleDetail({
                                     src={article.featured_image}
                                     alt={article.title}
                                     metadata={article.image_metadata}
-                                    className="w-full rounded-xl h-64 md:h-80 lg:h-96"
-                                    size="large"
+                                    className="w-full rounded-xl h-64 md:h-80 lg:h-96 object-cover"
+                                    size="medium"
                                     lazy={false}
                                 />
                             </div>
@@ -295,9 +345,10 @@ export default function ArticleDetail({
                                                     src={relatedArticle.featured_image || relatedArticle.image}
                                                     alt={relatedArticle.title}
                                                     metadata={relatedArticle.image_metadata}
-                                                    className="h-full w-full transition-transform duration-500 hover:scale-105"
+                                                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                                                     size="small"
                                                     lazy={true}
+                                                    placeholder={true}
                                                 />
                                                 <div className="absolute left-3 top-3 rounded-full bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
                                                     {relatedArticle.category}

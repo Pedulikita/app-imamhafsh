@@ -8,6 +8,23 @@ import { ArrowLeft } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { type BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+// Predefined section keys that are used in home page
+const SECTION_KEYS = [
+    { value: 'about', label: 'About - Tentang Sekolah' },
+    { value: 'alasan', label: 'Alasan - Mengapa Memilih Kami' },
+    { value: 'pendidikan', label: 'Pendidikan - Kebijakan & Norma' },
+    { value: 'galeri', label: 'Galeri - Project Siswa' },
+    { value: 'artikel', label: 'Artikel - Artikel Terbaru' },
+];
 
 interface HomeSection {
     id: number;
@@ -16,12 +33,16 @@ interface HomeSection {
     subtitle: string | null;
     content: string | null;
     image: string | null;
+    image_url: string | null; // Add image_url accessor
     image_alt: string | null;
     badge_text: string | null;
     button_text: string | null;
     button_link: string | null;
     order: number;
     is_active: boolean;
+    meta?: {
+        list_items?: string[];
+    };
 }
 
 interface Props {
@@ -81,6 +102,13 @@ export default function Edit({ section }: Props) {
                     </div>
                 </div>
 
+                <Alert>
+                    <AlertDescription>
+                        <strong>Section Keys:</strong> Pilih section key yang sesuai dengan area pada halaman home yang ingin Anda atur.
+                        Setiap section key hanya bisa digunakan sekali dan akan menggantikan konten default di halaman home.
+                    </AlertDescription>
+                </Alert>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Basic Info */}
                     <div className="rounded-xl border border-sidebar-border/70 bg-background p-6 space-y-4">
@@ -89,14 +117,21 @@ export default function Edit({ section }: Props) {
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="section_key">Section Key *</Label>
-                                <Input
-                                    id="section_key"
+                                <Select
                                     value={data.section_key}
-                                    onChange={(e) =>
-                                        setData('section_key', e.target.value)
-                                    }
-                                    required
-                                />
+                                    onValueChange={(value) => setData('section_key', value)}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Pilih section untuk halaman home" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {SECTION_KEYS.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 {errors.section_key && (
                                     <p className="text-sm text-red-500">
                                         {errors.section_key}
@@ -166,9 +201,13 @@ export default function Edit({ section }: Props) {
                                 <Label>Gambar Saat Ini</Label>
                                 <div className="w-48 h-48 rounded-md overflow-hidden border">
                                     <img
-                                        src={`/${section.image}`}
+                                        src={
+                                            section.image_url || 
+                                            (section.image.startsWith('/storage/') ? section.image : `/storage/${section.image}`)
+                                        }
                                         alt={section.title}
                                         className="h-full w-full object-cover"
+                                        onError={() => {}}
                                     />
                                 </div>
                             </div>

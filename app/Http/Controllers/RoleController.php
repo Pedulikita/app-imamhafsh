@@ -29,9 +29,11 @@ class RoleController extends Controller
     public function create(): Response
     {
         $permissions = Permission::all()->groupBy('group');
+        $users = User::all(['id', 'name', 'email', 'email_verified_at']);
 
         return Inertia::render('Admin/Roles/Create', [
             'permissions' => $permissions,
+            'users' => $users,
         ]);
     }
 
@@ -46,6 +48,8 @@ class RoleController extends Controller
             'description' => 'nullable|string',
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,id',
+            'users' => 'array',
+            'users.*' => 'exists:users,id',
         ]);
 
         $role = Role::create([
@@ -56,6 +60,13 @@ class RoleController extends Controller
 
         if ($request->has('permissions')) {
             $role->permissions()->sync($request->permissions);
+        }
+
+        if ($request->has('users')) {
+            $users = User::whereIn('id', $request->users)->get();
+            foreach ($users as $user) {
+                $user->roles()->syncWithoutDetaching([$role->id]);
+            }
         }
 
         return redirect()->route('roles.index')->with('success', 'Role berhasil ditambahkan!');
