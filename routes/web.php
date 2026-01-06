@@ -6,6 +6,12 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Redirect incorrect admin/storage requests to correct storage path
+Route::get('/admin/storage/{path}', function ($path) {
+    return redirect('/storage/' . $path, 301);
+})->where('path', '.*');
+
 Route::get('/about', [\App\Http\Controllers\PublicPageController::class, 'about'])->name('about');
 Route::get('/nilai', [\App\Http\Controllers\PublicPageController::class, 'nilai'])->name('nilai');
 Route::get('/mutu', [\App\Http\Controllers\PublicPageController::class, 'mutu'])->name('mutu');
