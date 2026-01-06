@@ -26,3 +26,8 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Ignore documentation and guide files
+*.md
+!README.md
+!CHANGELOG.md
