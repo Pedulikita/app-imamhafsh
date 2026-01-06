@@ -207,7 +207,7 @@ const adminNavItems: NavItemWithChildren[] = [
         items: [
             {
                 title: 'Users',
-                href: '/users',
+                href: '/admin/users',
                 icon: UserCog,
             },
             {

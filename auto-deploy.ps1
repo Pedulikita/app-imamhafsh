@@ -27,7 +27,7 @@ while ($true) {
         }
         
         $lastChange = Get-Date
-        Write-Host "👀 Watching for more changes...`n" -ForegroundColor Cyan
+        Write-Host "👀 Watching for more changes..." -ForegroundColor Cyan
     }
     
     Start-Sleep -Seconds 3

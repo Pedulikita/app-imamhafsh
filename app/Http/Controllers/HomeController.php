@@ -68,7 +68,7 @@ class HomeController extends Controller
                 'role' => $testimony->role,
                 'content' => $testimony->text,
                 'rating' => $testimony->rating,
-                'image' => $testimony->avatar,
+                'image' => $testimony->avatar_url,
                 'is_active' => $testimony->is_active,
             ];
         });

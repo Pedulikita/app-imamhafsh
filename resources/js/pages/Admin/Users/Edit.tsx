@@ -88,7 +88,7 @@ export default function UsersEdit() {
       submitData.password_confirmation = formData.password_confirmation;
     }
     
-    router.put(`/users/${user.id}`, submitData, {
+    router.put(`/admin/users/${user.id}`, submitData, {
       onSuccess: () => {
         setErrors({});
       },
@@ -325,7 +325,7 @@ export default function UsersEdit() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.get('/users')}
+                onClick={() => router.get('/admin/users')}
               >
                 Batal
               </Button>

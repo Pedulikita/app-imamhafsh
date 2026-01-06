@@ -38,4 +38,24 @@ class Testimony extends Model
     {
         return $query->where('is_featured', true);
     }
+
+    public function getAvatarUrlAttribute()
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+        
+        // If the avatar already starts with storage/, return it as is
+        if (str_starts_with($this->avatar, 'storage/')) {
+            return '/' . $this->avatar;
+        }
+        
+        // If the avatar starts with testimonies/, prepend storage/
+        if (str_starts_with($this->avatar, 'testimonies/')) {
+            return '/storage/' . $this->avatar;
+        }
+        
+        // Otherwise, return as is
+        return $this->avatar;
+    }
 }

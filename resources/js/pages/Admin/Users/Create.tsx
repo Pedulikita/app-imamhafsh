@@ -34,7 +34,7 @@ export default function UsersCreate() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.post('/users', formData);
+    router.post('/admin/users', formData);
   };
 
   const toggleRole = (roleId: number) => {
@@ -230,7 +230,7 @@ export default function UsersCreate() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.get('/users')}
+                onClick={() => router.get('/admin/users')}
               >
                 Batal
               </Button>

@@ -79,7 +79,7 @@ export default function RolesIndex() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" asChild>
-                <Link href="/users">
+                <Link href="/admin/users">
                   <Users className="h-4 w-4 mr-2" />
                   User Management
                 </Link>

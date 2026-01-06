@@ -64,7 +64,7 @@ export default function UsersIndex() {
   }, [searchTerm, users]);
 
   const handleDelete = (userId: number) => {
-    router.delete(`/users/${userId}`);
+    router.delete(`/admin/users/${userId}`);
   };
 
   const getRoleBadgeVariant = (roleName: string) => {
@@ -105,7 +105,7 @@ export default function UsersIndex() {
                 </h1>
                 <p className="text-gray-600 mt-2">Kelola pengguna dan role mereka</p>
               </div>
-              <Button onClick={() => router.get('/users/create')} className="flex items-center gap-2">
+              <Button onClick={() => router.get('/admin/users/create')} className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
                 Tambah User
               </Button>
@@ -189,7 +189,7 @@ export default function UsersIndex() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => router.get(`/users/${user.id}/edit`)}
+                                onClick={() => router.get(`/admin/users/${user.id}/edit`)}
                                 className="flex items-center gap-1"
                               >
                                 <Edit className="h-3 w-3" />
