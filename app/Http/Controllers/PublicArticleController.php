@@ -226,19 +226,40 @@ class PublicArticleController extends Controller
      */
     private function getRelatedArticles($excludeId, $category, $limit = 4)
     {
-        $sanitizedCategory = e($category);
+        // Get the category ID from the category object or relationship
+        $categoryId = $category instanceof \App\Models\Category ? $category->id : $category;
+        $cacheKey = "related_articles_{$excludeId}_{$categoryId}";
         
-        return cache()->remember("related_articles_{$excludeId}_{$sanitizedCategory}", 3600, function () use ($excludeId, $category, $limit) {
-            return Article::with('category')
+        return cache()->remember($cacheKey, 3600, function () use ($excludeId, $categoryId, $limit) {
+            $query = Article::with('category')
                 ->where('status', 'published')
-                ->where('id', '!=', $excludeId)
-                ->where('category', $category)
-                ->latest('published_at')
-                ->take($limit)
-                ->get()
-                ->map(function ($article) {
-                    return $this->formatArticleForPublic($article);
-                });
+                ->where('id', '!=', $excludeId);
+            
+            // If article has a category, get related articles from same category
+            if ($categoryId) {
+                $query->where('category_id', $categoryId);
+                $articles = $query->latest('published_at')->take($limit)->get();
+                
+                // If not enough articles in same category, fill with latest articles
+                if ($articles->count() < $limit) {
+                    $remaining = $limit - $articles->count();
+                    $moreArticles = Article::with('category')
+                        ->where('status', 'published')
+                        ->where('id', '!=', $excludeId)
+                        ->whereNotIn('id', $articles->pluck('id'))
+                        ->latest('published_at')
+                        ->take($remaining)
+                        ->get();
+                    $articles = $articles->concat($moreArticles);
+                }
+            } else {
+                // If no category, just get latest articles
+                $articles = $query->latest('published_at')->take($limit)->get();
+            }
+            
+            return $articles->map(function ($article) {
+                return $this->formatArticleForPublic($article);
+            });
         });
     }
 
