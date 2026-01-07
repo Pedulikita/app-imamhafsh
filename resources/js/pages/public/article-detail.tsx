@@ -334,41 +334,44 @@ export default function ArticleDetail({
                                 </h2>
                                 <div className="grid gap-6 md:grid-cols-2">
                                     {relatedArticles.slice(0, 4).map((relatedArticle) => (
-                                        <article
+                                        <a
                                             key={relatedArticle.id}
-                                            className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:shadow-lg"
+                                            href={`/articles/${relatedArticle.slug || relatedArticle.id}`}
+                                            className="block overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:shadow-lg hover:no-underline"
                                         >
-                                            <div className="relative h-32 w-full overflow-hidden bg-slate-100">
-                                                <OptimizedImage
-                                                    src={relatedArticle.featured_image || '/images/logo.png'}
-                                                    alt={relatedArticle.title}
-                                                    metadata={relatedArticle.image_metadata}
-                                                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                                                    size="small"
-                                                    lazy={true}
-                                                    placeholder={true}
-                                                />
-                                                <div className="absolute left-3 top-3 rounded-full bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
-                                                    {relatedArticle.category}
+                                            <article className="h-full">
+                                                <div className="relative h-32 w-full overflow-hidden bg-slate-100">
+                                                    <OptimizedImage
+                                                        src={relatedArticle.featured_image || '/images/logo.png'}
+                                                        alt={relatedArticle.title}
+                                                        metadata={relatedArticle.image_metadata}
+                                                        className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                                                        size="small"
+                                                        lazy={true}
+                                                        placeholder={true}
+                                                    />
+                                                    <div className="absolute left-3 top-3 rounded-full bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
+                                                        {relatedArticle.category || 'Umum'}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="p-4">
-                                                <h3 className="mb-2 line-clamp-2 text-sm font-bold text-slate-900">
-                                                    {relatedArticle.title}
-                                                </h3>
-                                                <p className="mb-2 line-clamp-2 text-xs text-slate-600">
-                                                    {relatedArticle.excerpt}
-                                                </p>
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-xs text-slate-500">
-                                                        {relatedArticle.date}
-                                                    </span>
-                                                    <span className="text-xs text-slate-500">
-                                                        👁 {relatedArticle.views}
-                                                    </span>
+                                                <div className="p-4">
+                                                    <h3 className="mb-2 line-clamp-2 text-sm font-bold text-slate-900">
+                                                        {relatedArticle.title}
+                                                    </h3>
+                                                    <p className="mb-2 line-clamp-2 text-xs text-slate-600">
+                                                        {relatedArticle.excerpt}
+                                                    </p>
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs text-slate-500">
+                                                            {relatedArticle.date}
+                                                        </span>
+                                                        <span className="text-xs text-slate-500">
+                                                            👁 {relatedArticle.views}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </article>
+                                            </article>
+                                        </a>
                                     ))}
                                 </div>
                             </div>
