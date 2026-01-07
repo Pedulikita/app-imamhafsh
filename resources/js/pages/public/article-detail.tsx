@@ -47,7 +47,7 @@ export default function ArticleDetail({
     // Construct proper absolute URL for image sharing
     const getShareImageUrl = () => {
         // For social media sharing, we need a direct, accessible image URL
-        // Facebook needs a direct path to image, not OptimizedImage processed paths
+        // Facebook/WhatsApp crawlers need a direct, publicly accessible image URL
         
         if (article.featured_image) {
             // If already absolute URL, use as is
@@ -55,16 +55,14 @@ export default function ArticleDetail({
                 return article.featured_image;
             }
             
-            // For relative paths, construct absolute URL
-            let imagePath = article.featured_image;
+            // For /storage/ paths, ensure proper URL construction
+            // The path is already /storage/... format from backend
+            const imagePath = article.featured_image.startsWith('/')
+                ? article.featured_image
+                : `/${article.featured_image}`;
             
-            // Remove any leading slash to avoid double slashes
-            if (imagePath.startsWith('/')) {
-                imagePath = imagePath.substring(1);
-            }
-            
-            // Construct full URL
-            return `${baseUrl}/${imagePath}`;
+            // Construct full URL - /storage paths are public and accessible
+            return `${baseUrl}${imagePath}`;
         }
         
         // Fallback to a guaranteed accessible logo
@@ -342,7 +340,7 @@ export default function ArticleDetail({
                                         >
                                             <div className="relative h-32 w-full overflow-hidden bg-slate-100">
                                                 <OptimizedImage
-                                                    src={relatedArticle.featured_image || relatedArticle.image}
+                                                    src={relatedArticle.featured_image || '/images/logo.png'}
                                                     alt={relatedArticle.title}
                                                     metadata={relatedArticle.image_metadata}
                                                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
