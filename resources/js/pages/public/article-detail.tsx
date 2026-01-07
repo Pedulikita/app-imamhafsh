@@ -347,7 +347,7 @@ export default function ArticleDetail({
                                                         metadata={relatedArticle.image_metadata}
                                                         className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                                                         size="small"
-                                                        lazy={true}
+                                                        lazy={false}
                                                         placeholder={true}
                                                     />
                                                     <div className="absolute left-3 top-3 rounded-full bg-blue-600 px-2 py-1 text-xs font-semibold text-white">
