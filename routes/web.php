@@ -7,6 +7,21 @@ use Laravel\Fortify\Features;
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Debug endpoint
+Route::get('/debug/user', function() {
+    if (!auth()->check()) {
+        return response()->json(['error' => 'Not authenticated']);
+    }
+    $user = auth()->user();
+    return response()->json([
+        'email' => $user->email,
+        'roles' => $user->roles->pluck('name'),
+        'has_parent_role' => $user->hasRole('parent'),
+        'parent_profile_exists' => $user->parentProfile ? true : false,
+        'parent_profile_id' => $user->parentProfile?->id,
+    ]);
+});
+
 // Redirect incorrect admin/storage requests to correct storage path
 Route::get('/admin/storage/{path}', function ($path) {
     return redirect('/storage/' . $path, 301);
