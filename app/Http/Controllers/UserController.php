@@ -47,13 +47,14 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'roles' => 'array',
             'roles.*' => 'exists:roles,id',
+            'email_verified' => 'boolean',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'email_verified_at' => now(), // Always verify - admin created users
+            'email_verified_at' => $request->boolean('email_verified') ? now() : null,
         ]);
 
         if ($request->has('roles')) {
