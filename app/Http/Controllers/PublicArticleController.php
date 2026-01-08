@@ -82,6 +82,11 @@ class PublicArticleController extends Controller
             // Simple meta data
             $metaTitle = $article->title . ' - Imam Hafsh Islamic Boarding School';
             $metaDescription = $article->excerpt ?: $article->title;
+            
+            // Meta image dimensions (standard for social media)
+            $metaImageWidth = '1200';
+            $metaImageHeight = '630';
+            $metaImageType = 'image/jpeg';
 
             return Inertia::render('public/article-detail', [
                 'article' => $articleData,
@@ -94,6 +99,10 @@ class PublicArticleController extends Controller
                 'metaTitle' => $metaTitle,
                 'metaDescription' => $metaDescription,
                 'metaImage' => $shareImage,
+                'metaImageAlt' => $metaTitle, // Article title as alt text
+                'metaImageWidth' => $metaImageWidth,
+                'metaImageHeight' => $metaImageHeight,
+                'metaImageType' => $metaImageType,
                 'metaUrl' => $shareUrl
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -131,6 +140,10 @@ class PublicArticleController extends Controller
                     'metaTitle' => $metaTitle,
                     'metaDescription' => $metaDescription,
                     'metaImage' => $shareImage,
+                    'metaImageAlt' => $metaTitle,
+                    'metaImageWidth' => '1200',
+                    'metaImageHeight' => '630',
+                    'metaImageType' => 'image/jpeg',
                     'metaUrl' => $shareUrl
                 ]);
             }

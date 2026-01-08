@@ -10,12 +10,18 @@
         <meta property="og:title" content="{{ $metaTitle ?? config('app.name', 'Imamhafsh.com') }}" />
         <meta property="og:description" content="{{ $metaDescription ?? 'Website Resmi Imam Hafsh Islamic Boarding School' }}" />
         <meta property="og:image" content="{{ $metaImage ?? 'https://imamhafsh.com/images/logo.png' }}" />
+        <meta property="og:image:secure_url" content="{{ $metaImage ?? 'https://imamhafsh.com/images/logo.png' }}" />
+        <meta property="og:image:type" content="{{ $metaImageType ?? 'image/jpeg' }}" />
+        <meta property="og:image:width" content="{{ $metaImageWidth ?? '1200' }}" />
+        <meta property="og:image:height" content="{{ $metaImageHeight ?? '630' }}" />
+        <meta property="og:image:alt" content="{{ $metaImageAlt ?? $metaTitle ?? config('app.name', 'Imamhafsh.com') }}" />
         <meta property="og:url" content="{{ $metaUrl ?? url()->current() }}" />
         <meta property="og:type" content="{{ isset($metaTitle) && $metaTitle !== config('app.name', 'Imamhafsh.com') ? 'article' : 'website' }}" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="{{ $metaTitle ?? config('app.name', 'Imamhafsh.com') }}" />
         <meta name="twitter:description" content="{{ $metaDescription ?? 'Website Resmi Imam Hafsh Islamic Boarding School' }}" />
         <meta name="twitter:image" content="{{ $metaImage ?? 'https://imamhafsh.com/images/logo.png' }}" />
+        <meta name="twitter:image:alt" content="{{ $metaImageAlt ?? $metaTitle ?? config('app.name', 'Imamhafsh.com') }}" />
         
         <meta property="og:site_name" content="Imam Hafsh Islamic Boarding School" />
         <meta property="og:locale" content="id_ID" />
