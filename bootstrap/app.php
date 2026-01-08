@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AllowGuestAndAuthenticated;
 use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\HandleAppearance;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
+            'guest_or_auth' => AllowGuestAndAuthenticated::class,
             'role' => CheckRole::class,
             'permission' => CheckPermission::class,
         ]);

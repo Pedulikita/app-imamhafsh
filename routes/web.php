@@ -51,6 +51,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/student/login', [\App\Http\Controllers\Auth\StudentAuthController::class, 'store']);
 });
 
+// Custom login route that allows both guests and authenticated users
+Route::middleware('guest_or_auth')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\Auth\FortifyLoginController::class, 'show'])
+        ->name('login');
+});
+
 Route::middleware('auth')->group(function () {
     Route::post('/student/logout', [\App\Http\Controllers\Auth\StudentAuthController::class, 'destroy'])
         ->name('student.logout');
