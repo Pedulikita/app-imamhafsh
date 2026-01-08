@@ -60,13 +60,16 @@ class PublicArticleController extends Controller
             $shareUrl = "{$baseUrl}/articles/{$article->slug}";
             
             // Construct image URL for sharing
+            // WhatsApp requires: proper URL, accessible, correct dimensions
             $shareImage = $baseUrl . '/images/logo.png'; // default fallback
             if ($article->featured_image) {
                 if (str_starts_with($article->featured_image, 'http')) {
                     $shareImage = $article->featured_image;
                 } else {
+                    // Remove leading slash for proper URL construction
                     $imagePath = ltrim($article->featured_image, '/');
-                    $shareImage = "{$baseUrl}/{$imagePath}";
+                    // Ensure full path with leading slash
+                    $shareImage = "{$baseUrl}/" . ltrim($imagePath, '/');
                 }
             }
 

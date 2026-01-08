@@ -49,6 +49,7 @@ export default function ArticleDetail({
     const getShareImageUrl = () => {
         // For social media sharing, we need a direct, accessible image URL
         // Facebook/WhatsApp crawlers need a direct, publicly accessible image URL
+        // WhatsApp requires: image URL accessible, minimum 200x200px, proper format
         
         const baseUrl = 'https://imamhafsh.com';
         
@@ -65,12 +66,12 @@ export default function ArticleDetail({
                 ? image
                 : `/${image}`;
             
-            // Construct full URL
+            // Construct full URL - ensure HTTPS for security
             const fullUrl = `${baseUrl}${imagePath}`;
             return fullUrl;
         }
         
-        // Fallback to logo if no featured image
+        // Fallback to logo if no featured image (must be accessible)
         return `${baseUrl}/images/logo.png`;
     };
     
@@ -127,17 +128,12 @@ export default function ArticleDetail({
                 <meta property="og:image:secure_url" content={shareImageUrl} />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
-                <meta property="og:image:alt" content={article.title} />
                 <meta property="og:image:type" content="image/jpeg" />
+                <meta property="og:image:alt" content={article.title} />
                 <meta property="og:url" content={shareUrl} />
                 <meta property="og:type" content="article" />
                 <meta property="og:site_name" content="Imam Hafsh Islamic Boarding School" />
                 <meta property="og:locale" content="id_ID" />
-                
-                <meta property="article:author" content={article.authorName || 'Imam Hafsh'} />
-                <meta property="article:published_time" content={article.date} />
-                <meta property="article:section" content={article.category || 'Artikel'} />
-                <meta property="article:tag" content={article.tags?.join(', ') || article.title} />
                 
                 {/* Twitter Card Meta Tags */}
                 <meta name="twitter:card" content="summary_large_image" />
@@ -145,18 +141,13 @@ export default function ArticleDetail({
                 <meta name="twitter:description" content={article.excerpt || article.title} />
                 <meta name="twitter:image" content={shareImageUrl} />
                 <meta name="twitter:image:alt" content={article.title} />
-                <meta name="twitter:site" content="@imamhafsh" />
-                <meta name="twitter:creator" content="@imamhafsh" />
                 
-                {/* Additional Meta Tags */}
-                <meta name="author" content={article.authorName} />
-                <meta name="robots" content="index, follow" />
-                <meta name="article:modified_time" content={article.date} />
-                
-                {/* WhatsApp and other social platforms */}
+                {/* WhatsApp optimizations - critical for WhatsApp preview */}
                 <meta property="og:image:url" content={shareImageUrl} />
                 <meta name="image" content={shareImageUrl} />
                 <meta name="thumbnail" content={shareImageUrl} />
+                <meta property="twitter:image:width" content="1200" />
+                <meta property="twitter:image:height" content="630" />
                 
                 {/* Schema.org structured data */}
                 <script type="application/ld+json">
