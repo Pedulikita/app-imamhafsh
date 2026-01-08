@@ -18,6 +18,10 @@ class LoginResponse implements LoginResponseContract
         // Redirect based on user role
         if ($user->hasRole('teacher')) {
             $redirectUrl = route('teacher.dashboard');
+        } elseif ($user->hasRole('parent')) {
+            $redirectUrl = route('parent.dashboard');
+        } elseif ($user->hasRole('student')) {
+            $redirectUrl = route('student.dashboard');
         } elseif ($user->hasRole('super_admin') || $user->hasRole('admin') || $user->hasRole('editor') || $user->hasRole('penulis')) {
             $redirectUrl = route('dashboard');
         } else {
