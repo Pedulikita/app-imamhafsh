@@ -366,6 +366,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+// Parent Routes
+Route::middleware(['auth', 'verified', 'role:parent'])->prefix('parent')->name('parent.')->group(function() {
+    Route::get('/dashboard', [\App\Http\Controllers\ParentController::class, 'dashboard'])->name('dashboard');
+    Route::get('/child/{student}', [\App\Http\Controllers\ParentController::class, 'showChild'])->name('child.show');
+    Route::get('/child/{student}/grades', [\App\Http\Controllers\ParentController::class, 'childGrades'])->name('child.grades');
+    Route::get('/child/{student}/attendance', [\App\Http\Controllers\ParentController::class, 'childAttendance'])->name('child.attendance');
+    Route::get('/communications', [\App\Http\Controllers\ParentController::class, 'communications'])->name('communications');
+    Route::get('/announcements', [\App\Http\Controllers\ParentController::class, 'announcements'])->name('announcements');
+    Route::get('/profile', [\App\Http\Controllers\ParentController::class, 'profileSettings'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\ParentController::class, 'updateProfileSettings'])->name('profile.update');
+});
+
 // Student Routes
 Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function() {
     // Dashboard

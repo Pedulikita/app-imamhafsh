@@ -48,7 +48,7 @@ if ($changes) {
     
     git add .
     git commit -m $commitMsg
-    git push origin main
+    git push origin master
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✓ Git push berhasil" -ForegroundColor $Green
@@ -72,7 +72,7 @@ cd $RemotePath
 
 # Pull latest changes dari GitHub
 echo 'Pulling latest changes...'
-git pull origin main
+git pull origin master
 
 # Install/Update dependencies
 echo 'Installing dependencies...'
