@@ -132,6 +132,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the parent profile associated with the user.
+     */
+    public function parentProfile()
+    {
+        return $this->hasOne(ParentProfile::class);
+    }
+
+    /**
      * Get the student profile associated with the user.
      */
     public function student()

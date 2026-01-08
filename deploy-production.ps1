@@ -66,22 +66,22 @@ Write-Host "User: $SSHUser | Port: $SSHPort | Path: $RemotePath" -ForegroundColo
 Write-Host ""
 
 # SSH Deploy Commands
-$DeployCommands = @"
+$DeployCommands = @'
 # Navigate to project directory
-cd $RemotePath
+cd ~/public_html
 
 # Pull latest changes dari GitHub
-echo 'Pulling latest changes...'
+echo "Pulling latest changes..."
 git pull origin master
 
 # Install/Update dependencies
-echo 'Installing dependencies...'
+echo "Installing dependencies..."
 composer install --no-dev --optimize-autoloader
 npm install
 npm run build
 
 # Laravel preparation
-echo 'Preparing Laravel...'
+echo "Preparing Laravel..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
@@ -94,9 +94,9 @@ php artisan optimize
 chmod -R 755 storage bootstrap/cache
 chmod -R 755 public/storage
 
-echo 'Deployment complete!'
+echo "Deployment complete!"
 date
-"@
+'@
 
 # Execute SSH command
 if ($DryRun) {
@@ -126,19 +126,15 @@ if ($DryRun) {
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host ""
-        Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor $Green
-        Write-Host "║       SUCCESS - Deployment Complete!                      ║" -ForegroundColor $Green
-        Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor $Green
+        Write-Host "SUCCESS - Deployment Complete!" -ForegroundColor $Green
         Write-Host ""
         Write-Host "Website: https://imamhafsh.com" -ForegroundColor $Cyan
     } else {
         Write-Host ""
-        Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor $Red
-        Write-Host "║       ERROR - Deployment Failed                          ║" -ForegroundColor $Red
-        Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor $Red
+        Write-Host "ERROR - Deployment Failed" -ForegroundColor $Red
         exit 1
     }
 }
 
 Write-Host ""
-Write-Host "Deployment selesai pada $(Get-Date)" -ForegroundColor $Cyan
+Write-Host ("Deployment selesai pada " + (Get-Date)) -ForegroundColor $Cyan
