@@ -271,3 +271,80 @@
     border-radius: 0.5rem;
     margin: 1em 0;
 }
+
+/* Article Content Styling */
+.content-wrapper {
+    @apply text-base leading-relaxed;
+}
+
+.content-wrapper p {
+    @apply mb-4 text-slate-700;
+    line-height: 1.8;
+}
+
+.content-wrapper p:last-child {
+    @apply mb-0;
+}
+
+.content-wrapper h1,
+.content-wrapper h2,
+.content-wrapper h3,
+.content-wrapper h4,
+.content-wrapper h5,
+.content-wrapper h6 {
+    @apply font-bold text-slate-900 mt-6 mb-3;
+}
+
+.content-wrapper h1 {
+    @apply text-2xl;
+}
+
+.content-wrapper h2 {
+    @apply text-xl;
+}
+
+.content-wrapper h3 {
+    @apply text-lg;
+}
+
+.content-wrapper ul,
+.content-wrapper ol {
+    @apply mb-4 ml-6 text-slate-700;
+}
+
+.content-wrapper ul li,
+.content-wrapper ol li {
+    @apply mb-2;
+}
+
+.content-wrapper ul li {
+    @apply list-disc;
+}
+
+.content-wrapper ol li {
+    @apply list-decimal;
+}
+
+.content-wrapper blockquote {
+    @apply border-l-4 border-slate-300 pl-4 italic text-slate-600 my-4;
+}
+
+.content-wrapper a {
+    @apply text-blue-600 hover:text-blue-800 hover:underline;
+}
+
+.content-wrapper img {
+    @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.content-wrapper pre {
+    @apply bg-slate-100 rounded p-4 overflow-x-auto mb-4;
+}
+
+.content-wrapper code {
+    @apply bg-slate-100 px-2 py-1 rounded font-mono text-sm;
+}
+
+.content-wrapper pre code {
+    @apply bg-transparent px-0 py-0;
+}

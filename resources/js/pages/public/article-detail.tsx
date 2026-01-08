@@ -3,6 +3,7 @@ import OptimizedImage from '@/components/OptimizedImage';
 import { Head } from '@inertiajs/react';
 import { Calendar, Eye, User, Share2, Facebook, Twitter, MessageCircle, ArrowLeft, Link2, Check } from 'lucide-react';
 import { useState } from 'react';
+import { formatArticleContent } from '@/utils/formatContent';
 
 type Article = {
     id: number;
@@ -254,8 +255,11 @@ export default function ArticleDetail({
                             </div>
 
                             {/* Article Content */}
-                            <div className="prose prose-lg max-w-none text-slate-700">
-                                <div dangerouslySetInnerHTML={{ __html: article.content }} />
+                            <div className="prose prose-lg max-w-none text-slate-700 space-y-4">
+                                <div 
+                                    className="content-wrapper"
+                                    dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }} 
+                                />
                             </div>
 
                             {/* Tags */}
