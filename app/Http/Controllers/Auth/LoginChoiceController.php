@@ -10,6 +10,6 @@ class LoginChoiceController extends Controller
 {
     public function show()
     {
-        return Inertia::render('Auth/LoginChoice');
+        return Inertia::render('auth/LoginChoice');
     }
 }
