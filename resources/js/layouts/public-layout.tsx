@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { about, achievements, activities, articles, events, ekstrakurikuler, fasilitas, home, kurikulum, literasi, login, mutu, nilai, project, register, team, testimoni } from '@/routes';
 import { type InertiaLinkProps, Link, usePage } from '@inertiajs/react';
-import { ChevronDown, Menu } from 'lucide-react';
+import { ChevronDown, Menu, ExternalLink } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 type NavItem =
@@ -185,6 +185,37 @@ function NavLink({ item }: { item: NavItem }) {
 }
 
 export default function PublicLayout({ children }: PropsWithChildren) {
+    const { props } = usePage();
+    const siteSettings = props.siteSettings as {
+        contact: Array<{key: string, value: string, label: string}> | null;
+        social: Array<{key: string, value: string, label: string}> | null;
+    } | null;
+
+    // Helper function to get setting value by key with proper error handling
+    const getSetting = (group: 'contact' | 'social', key: string, fallback = '') => {
+        try {
+            if (!siteSettings || !siteSettings[group] || !Array.isArray(siteSettings[group])) {
+                return fallback;
+            }
+            const setting = siteSettings[group]?.find(item => item && item.key === key);
+            return setting?.value || fallback;
+        } catch (error) {
+            console.warn(`Error getting setting ${group}.${key}:`, error);
+            return fallback;
+        }
+    };
+
+    // Helper function to check if social link exists and is not empty
+    const hasSocialLink = (key: string) => {
+        try {
+            const value = getSetting('social', key);
+            return value && value !== '#' && value.trim() !== '';
+        } catch (error) {
+            console.warn(`Error checking social link ${key}:`, error);
+            return false;
+        }
+    };
+
     return (
         <div className="min-h-svh bg-white text-neutral-900">
             <header className="sticky top-0 z-40 border-b border-white/10 bg-gradient-to-r from-blue-700 via-blue-600 to-emerald-500">
@@ -366,24 +397,90 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <div>
                                 <div className="text-sm font-semibold">Kontak</div>
                                 <div className="mt-3 grid gap-2 text-sm text-white/75">
-                                    <div>WhatsApp: +62 8xx-xxxx-xxxx</div>
-                                    <div>Email: info@imamhafsh.com</div>
-                                    <div>Alamat: Bandung, Jawa Barat</div>
+                                    {getSetting('contact', 'contact_address') && (
+                                        <div>Alamat: {getSetting('contact', 'contact_address', 'Bandung, Jawa Barat')}</div>
+                                    )}
+                                    {getSetting('contact', 'contact_phone') && (
+                                        <div>Telepon: {getSetting('contact', 'contact_phone', '+62 8xx-xxxx-xxxx')}</div>
+                                    )}
+                                    {getSetting('contact', 'contact_whatsapp') && (
+                                        <div>WhatsApp: {getSetting('contact', 'contact_whatsapp', '+62 8xx-xxxx-xxxx')}</div>
+                                    )}
+                                    {getSetting('contact', 'contact_email') && (
+                                        <div>Email: {getSetting('contact', 'contact_email', 'info@imamhafsh.com')}</div>
+                                    )}
                                 </div>
                             </div>
 
                             <div>
                                 <div className="text-sm font-semibold">Sosial</div>
                                 <div className="mt-3 grid gap-2 text-sm text-white/75">
-                                    <a href="#" className="hover:text-white">
-                                        Instagram
-                                    </a>
-                                    <a href="#" className="hover:text-white">
-                                        YouTube
-                                    </a>
-                                    <a href="#" className="hover:text-white">
-                                        Facebook
-                                    </a>
+                                    {hasSocialLink('social_instagram') && (
+                                        <a 
+                                            href={getSetting('social', 'social_instagram')} 
+                                            className="hover:text-white flex items-center gap-1"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Instagram
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    )}
+                                    {hasSocialLink('social_youtube') && (
+                                        <a 
+                                            href={getSetting('social', 'social_youtube')} 
+                                            className="hover:text-white flex items-center gap-1"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            YouTube
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    )}
+                                    {hasSocialLink('social_facebook') && (
+                                        <a 
+                                            href={getSetting('social', 'social_facebook')} 
+                                            className="hover:text-white flex items-center gap-1"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Facebook
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    )}
+                                    {hasSocialLink('social_twitter') && (
+                                        <a 
+                                            href={getSetting('social', 'social_twitter')} 
+                                            className="hover:text-white flex items-center gap-1"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Twitter
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    )}
+                                    {hasSocialLink('social_linkedin') && (
+                                        <a 
+                                            href={getSetting('social', 'social_linkedin')} 
+                                            className="hover:text-white flex items-center gap-1"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            LinkedIn
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    )}
+                                    {hasSocialLink('social_tiktok') && (
+                                        <a 
+                                            href={getSetting('social', 'social_tiktok')} 
+                                            className="hover:text-white flex items-center gap-1"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            TikTok
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    )}
                                 </div>
                             </div>
                         </div>

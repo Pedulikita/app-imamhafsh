@@ -41,6 +41,9 @@ import {
     School,
     Heart,
     UserCog,
+    Settings,
+    Phone,
+    Share2,
     type LucideIcon
 } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -219,6 +222,23 @@ const adminNavItems: NavItemWithChildren[] = [
                 title: 'Permissions',
                 href: '/permissions',
                 icon: Key,
+            },
+        ],
+    },
+    {
+        title: 'Site Settings',
+        icon: Settings,
+        isActive: true,
+        items: [
+            {
+                title: 'Kontak',
+                href: '/admin/settings/contact',
+                icon: Phone,
+            },
+            {
+                title: 'Media Sosial',
+                href: '/admin/settings/social',
+                icon: Share2,
             },
         ],
     },

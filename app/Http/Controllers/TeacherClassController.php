@@ -177,7 +177,7 @@ class TeacherClassController extends Controller
         // Recent activities
         $recentActivities = Activity::where('class_id', $class->id)
                                   ->with('student')
-                                  ->orderBy('date', 'desc')
+                                  ->orderBy('created_at', 'desc')
                                   ->limit(10)
                                   ->get()
                                   ->map(function ($activity) {
@@ -186,7 +186,7 @@ class TeacherClassController extends Controller
                                           'student_name' => $activity->student->name ?? 'Unknown',
                                           'type' => $activity->type,
                                           'description' => $activity->description,
-                                          'date' => $activity->date,
+                                          'date' => $activity->created_at->format('Y-m-d H:i:s'),
                                           'status' => $activity->status
                                       ];
                                   });

@@ -85,6 +85,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('users', \App\Http\Controllers\UserController::class);
         Route::post('users/assign-role', [\App\Http\Controllers\UserController::class, 'assignRole'])->name('users.assign-role');
         Route::delete('users/remove-role', [\App\Http\Controllers\UserController::class, 'removeRole'])->name('users.remove-role');
+        
+        // Site Settings Routes
+        Route::get('settings/contact', [\App\Http\Controllers\Admin\SettingsController::class, 'contact'])->name('settings.contact');
+        Route::get('settings/social', [\App\Http\Controllers\Admin\SettingsController::class, 'social'])->name('settings.social');
+        Route::put('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+        Route::post('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.store');
+        Route::post('settings/initialize-defaults', [\App\Http\Controllers\Admin\SettingsController::class, 'initializeDefaults'])->name('settings.initialize-defaults');
+        Route::delete('settings/{setting}', [\App\Http\Controllers\Admin\SettingsController::class, 'destroy'])->name('settings.destroy');
     });
 
     // Pages Management (Super Admin and Editor can manage)

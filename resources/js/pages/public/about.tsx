@@ -21,10 +21,28 @@ interface ProfilePage {
 
 interface PageProps extends InertiaPageProps {
   page?: ProfilePage;
+  siteSettings?: {
+    contact: Array<{key: string, value: string, label: string}> | null;
+    social: Array<{key: string, value: string, label: string}> | null;
+  } | null;
 }
 
 export default function About() {
-    const { page } = usePage<PageProps>().props;
+    const { page, siteSettings } = usePage<PageProps>().props;
+    
+    // Helper function to get setting value by key with proper error handling
+    const getSetting = (group: 'contact' | 'social', key: string, fallback = '') => {
+        try {
+            if (!siteSettings || !siteSettings[group] || !Array.isArray(siteSettings[group])) {
+                return fallback;
+            }
+            const setting = siteSettings[group]?.find(item => item && item.key === key);
+            return setting?.value || fallback;
+        } catch (error) {
+            console.warn(`Error getting setting ${group}.${key}:`, error);
+            return fallback;
+        }
+    };
     
     // Dynamic Image Functions with Fallback System
     const getHeroImage = () => {
@@ -213,23 +231,32 @@ export default function About() {
                                 <div>
                                     <h4 className="mb-1 font-bold text-blue-600">Find Us</h4>
                                     <p className="text-sm text-slate-600">
-                                        Jl. Pinus, RT. 01/RW. 06, Kelurahan Margajaya, Kecamatan Bogor Barat, Kota Bogor, Jawa Barat, 16116.
+                                        {getSetting('contact', 'contact_address', 'Jl. Pinus, RT. 01/RW. 06, Kelurahan Margajaya, Kecamatan Bogor Barat, Kota Bogor, Jawa Barat, 16116.')}
                                     </p>
                                 </div>
                                 
                                 <div>
                                     <h4 className="mb-1 font-bold text-blue-600">Our Mail</h4>
                                     <p className="text-sm text-slate-600">
-                                        imamhafsh.bogor@gmail.com
+                                        {getSetting('contact', 'contact_email', 'imamhafsh.bogor@gmail.com')}
                                     </p>
                                 </div>
 
                                 <div>
                                     <h4 className="mb-1 font-bold text-blue-600">Call Center</h4>
                                     <p className="text-sm text-slate-600">
-                                        0812-3456-7890
+                                        {getSetting('contact', 'contact_phone', '0812-3456-7890')}
                                     </p>
                                 </div>
+
+                                {getSetting('contact', 'contact_whatsapp') && (
+                                    <div>
+                                        <h4 className="mb-1 font-bold text-blue-600">WhatsApp</h4>
+                                        <p className="text-sm text-slate-600">
+                                            {getSetting('contact', 'contact_whatsapp')}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
