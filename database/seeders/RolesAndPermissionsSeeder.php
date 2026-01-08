@@ -121,6 +121,13 @@ class RolesAndPermissionsSeeder extends Seeder
         // User has no special permissions
         $userRole->permissions()->sync([]);
 
+        // Parent role - for parent portal access
+        $parentRole = Role::firstOrCreate(
+            ['name' => 'parent'],
+            ['display_name' => 'Parent', 'description' => 'Parent access to child portal']
+        );
+        $parentRole->permissions()->sync([]); // Parents don't need special permissions, access controlled via middleware
+
         $this->command->info('Roles and permissions seeded successfully!');
         $this->command->info('');
         $this->command->info('Created Roles:');
@@ -129,5 +136,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->command->info('- Editor: Can manage pages and articles');
         $this->command->info('- Penulis: Can create and edit own articles');
         $this->command->info('- User: Basic access only');
+        $this->command->info('- Parent: Access to parent portal');
     }
 }
