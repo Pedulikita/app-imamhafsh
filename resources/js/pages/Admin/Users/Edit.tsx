@@ -41,6 +41,7 @@ export default function UsersEdit() {
     password: '',
     password_confirmation: '',
     roles: user.roles.map(role => role.id),
+    email_verified: !!user.email_verified_at, // Add verification control
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,6 +81,7 @@ export default function UsersEdit() {
       name: formData.name,
       email: formData.email,
       roles: formData.roles,
+      email_verified: formData.email_verified, // Include verification status
     } as any;
     
     // Only include password fields if password is provided
@@ -186,6 +188,22 @@ export default function UsersEdit() {
                     className={errors.email ? 'border-red-500' : ''}
                   />
                   {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="email_verified"
+                      checked={formData.email_verified}
+                      onCheckedChange={(checked) => setFormData({ ...formData, email_verified: !!checked })}
+                    />
+                    <label htmlFor="email_verified" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
+                      Email Verified
+                    </label>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Centang untuk menandai email sebagai terverifikasi. User dengan email terverifikasi dapat mengakses semua fitur.
+                  </p>
                 </div>
 
                 <div className="border-t pt-4">

@@ -53,7 +53,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'email_verified_at' => now(), // Auto-verify for admin created users
+            'email_verified_at' => now(), // Always verify - admin created users
         ]);
 
         if ($request->has('roles')) {
@@ -100,6 +100,7 @@ class UserController extends Controller
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'roles' => 'array',
             'roles.*' => 'exists:roles,id',
+            'email_verified' => 'boolean',
         ]);
 
         $updateData = [
@@ -110,6 +111,9 @@ class UserController extends Controller
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
         }
+
+        // Handle email verification based on admin input
+        $updateData['email_verified_at'] = $request->boolean('email_verified') ? now() : null;
 
         $user->update($updateData);
 
