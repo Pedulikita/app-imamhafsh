@@ -141,6 +141,7 @@
         @apply bg-background text-foreground;
     }
 }
+
 /* TipTap Editor Styles */
 .ProseMirror {
     outline: none;

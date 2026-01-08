@@ -50,23 +50,27 @@ export default function ArticleDetail({
         // For social media sharing, we need a direct, accessible image URL
         // Facebook/WhatsApp crawlers need a direct, publicly accessible image URL
         
-        if (article.featured_image) {
-            // If already absolute URL, use as is
-            if (article.featured_image.startsWith('http://') || article.featured_image.startsWith('https://')) {
-                return article.featured_image;
+        const baseUrl = 'https://imamhafsh.com';
+        
+        if (article.featured_image && article.featured_image.trim()) {
+            const image = article.featured_image.trim();
+            
+            // If already absolute URL, validate it
+            if (image.startsWith('http://') || image.startsWith('https://')) {
+                return image;
             }
             
-            // For /storage/ paths, ensure proper URL construction
-            // The path is already /storage/... format from backend
-            const imagePath = article.featured_image.startsWith('/')
-                ? article.featured_image
-                : `/${article.featured_image}`;
+            // For relative paths, ensure they start with /
+            const imagePath = image.startsWith('/')
+                ? image
+                : `/${image}`;
             
-            // Construct full URL - /storage paths are public and accessible
-            return `${baseUrl}${imagePath}`;
+            // Construct full URL
+            const fullUrl = `${baseUrl}${imagePath}`;
+            return fullUrl;
         }
         
-        // Fallback to a guaranteed accessible logo
+        // Fallback to logo if no featured image
         return `${baseUrl}/images/logo.png`;
     };
     
@@ -74,12 +78,14 @@ export default function ArticleDetail({
     const shareImageUrl = getShareImageUrl();
     
     // Debug: Log sharing URLs (only in development)
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-        console.log('Article sharing:', {
+    if (typeof window !== 'undefined') {
+        console.log('Article sharing DEBUG:', {
             title: article.title,
             url: shareUrl,
             image: shareImageUrl,
-            hasFeatureImage: !!article.featured_image
+            featured_image_raw: article.featured_image,
+            hasFeatureImage: !!article.featured_image,
+            env: process.env.NODE_ENV
         });
     }
 

@@ -19,12 +19,12 @@ export const formatArticleContent = (content: string): string => {
     // Convert plain text to HTML paragraphs
     return content
         .split(/\n{2,}/) // Split by double line breaks (paragraphs)
-        .map(paragraph => {
+        .map((paragraph) => {
             return paragraph
                 .trim()
                 .split(/\n/) // Split by single line breaks
-                .map(line => line.trim())
-                .filter(line => line.length > 0)
+                .map((line) => line.trim())
+                .filter((line) => line.length > 0)
                 .join('<br />')
                 .replace(/^/, '<p>')
                 .replace(/$/, '</p>');

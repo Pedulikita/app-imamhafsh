@@ -143,11 +143,14 @@ class PublicArticleController extends Controller
      */
     private function formatArticleForPublic($article, $includeContent = false)
     {
+        // Ensure featured_image has value, fallback to logo path
+        $featured_image = $article->featured_image ?? '/images/logo.png';
+        
         $data = [
             'id' => $article->id,
             'title' => e($article->title), // XSS protection
             'slug' => $article->slug,
-            'featured_image' => $article->featured_image, // Path sudah benar dari database
+            'featured_image' => $featured_image, // Always has value for sharing
             'image_metadata' => $article->image_metadata,
             'category' => $article->category ? e($article->category->name) : e($article->category ?? 'General'),
             'date' => $article->published_at ? $article->published_at->format('d M Y') : '',
