@@ -1,33 +1,20 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Database\Seeders;
 
 use App\Models\SiteSetting;
-use Illuminate\Console\Command;
+use Illuminate\Database\Seeder;
 
-class InitializeSiteSettings extends Command
+class SiteSettingsSeeder extends Seeder
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
+     * Run the database seeds.
      */
-    protected $signature = 'settings:initialize';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Initialize default site settings for contact and social media';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function run(): void
     {
-        $this->info('Initializing default site settings...');
-
+        // Clear existing settings
+        SiteSetting::truncate();
+        
         $defaults = [
             // Contact Information
             [
@@ -35,36 +22,40 @@ class InitializeSiteSettings extends Command
                 'type' => 'textarea',
                 'group' => 'contact',
                 'label' => 'Alamat',
-                'value' => '',
+                'value' => 'Gg. Al-Fitroh Jl. Kemang Kiara, Kemang, Kec. Kemang, Kabupaten Bogor, Jawa Barat 16310',
                 'description' => 'Alamat lengkap institusi',
-                'order' => 1
+                'order' => 1,
+                'is_active' => true
             ],
             [
                 'key' => 'contact_phone',
                 'type' => 'phone',
                 'group' => 'contact',
                 'label' => 'Telepon',
-                'value' => '',
+                'value' => '08111178847',
                 'description' => 'Nomor telepon utama',
-                'order' => 2
+                'order' => 2,
+                'is_active' => true
             ],
             [
                 'key' => 'contact_whatsapp',
                 'type' => 'phone',
                 'group' => 'contact',
                 'label' => 'WhatsApp',
-                'value' => '',
+                'value' => '08111178847',
                 'description' => 'Nomor WhatsApp',
-                'order' => 3
+                'order' => 3,
+                'is_active' => true
             ],
             [
                 'key' => 'contact_email',
                 'type' => 'email',
                 'group' => 'contact',
                 'label' => 'Email',
-                'value' => '',
+                'value' => 'info@imamhafsh.com',
                 'description' => 'Email utama institusi',
-                'order' => 4
+                'order' => 4,
+                'is_active' => true
             ],
             
             // Social Media
@@ -75,7 +66,8 @@ class InitializeSiteSettings extends Command
                 'label' => 'Facebook',
                 'value' => '',
                 'description' => 'URL halaman Facebook',
-                'order' => 1
+                'order' => 1,
+                'is_active' => true
             ],
             [
                 'key' => 'social_instagram',
@@ -84,7 +76,8 @@ class InitializeSiteSettings extends Command
                 'label' => 'Instagram',
                 'value' => '',
                 'description' => 'URL profil Instagram',
-                'order' => 2
+                'order' => 2,
+                'is_active' => true
             ],
             [
                 'key' => 'social_youtube',
@@ -93,7 +86,8 @@ class InitializeSiteSettings extends Command
                 'label' => 'YouTube',
                 'value' => '',
                 'description' => 'URL channel YouTube',
-                'order' => 3
+                'order' => 3,
+                'is_active' => true
             ],
             [
                 'key' => 'social_twitter',
@@ -102,7 +96,8 @@ class InitializeSiteSettings extends Command
                 'label' => 'Twitter',
                 'value' => '',
                 'description' => 'URL profil Twitter',
-                'order' => 4
+                'order' => 4,
+                'is_active' => true
             ],
             [
                 'key' => 'social_linkedin',
@@ -111,7 +106,8 @@ class InitializeSiteSettings extends Command
                 'label' => 'LinkedIn',
                 'value' => '',
                 'description' => 'URL profil LinkedIn',
-                'order' => 5
+                'order' => 5,
+                'is_active' => true
             ],
             [
                 'key' => 'social_tiktok',
@@ -120,31 +116,15 @@ class InitializeSiteSettings extends Command
                 'label' => 'TikTok',
                 'value' => '',
                 'description' => 'URL profil TikTok',
-                'order' => 6
+                'order' => 6,
+                'is_active' => true
             ]
         ];
-
-        $created = 0;
-        $updated = 0;
-
+        
         foreach ($defaults as $setting) {
-            $existing = SiteSetting::where('key', $setting['key'])->first();
-            
-            if ($existing) {
-                $existing->update($setting);
-                $updated++;
-                $this->line("Updated: {$setting['label']}");
-            } else {
-                SiteSetting::create($setting);
-                $created++;
-                $this->line("Created: {$setting['label']}");
-            }
+            SiteSetting::create($setting);
         }
-
-        $this->info("Default settings initialized successfully!");
-        $this->info("Created: {$created} settings");
-        $this->info("Updated: {$updated} settings");
-
-        return Command::SUCCESS;
+        
+        $this->command->info('Site settings seeded successfully!');
     }
 }

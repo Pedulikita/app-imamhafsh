@@ -354,7 +354,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
             <main>{children}</main>
 
             <footer id="kontak" className=" text-white border-t bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500">
-                <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.25)_1px,transparent_0)] [background-size:20px_20px]" />
+                <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.25)_1px,transparent_0)] [background-size:20px_20px]" />
                 <div className="mx-auto max-w-7xl px-4 py-12">
                     <div className="grid gap-10 lg:grid-cols-12">
                         <div className="lg:col-span-5">

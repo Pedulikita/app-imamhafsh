@@ -44,6 +44,7 @@ import {
     Settings,
     Phone,
     Share2,
+    Building2,
     type LucideIcon
 } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -141,6 +142,18 @@ const adminNavItems: NavItemWithChildren[] = [
                 title: 'Literasi Content',
                 href: '/admin/literasi-content',
                 icon: BookOpen,
+            },
+        ],
+    },
+    {
+        title: 'Facilities',
+        icon: Building2,
+        isActive: true,
+        items: [
+            {
+                title: 'Manage Facilities',
+                href: '/admin/facilities',
+                icon: Building2,
             },
         ],
     },

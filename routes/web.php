@@ -130,7 +130,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Content Management - Projects, Activities, Events, etc (Super Admin and Editor can manage)
-    Route::prefix('admin')->middleware(['role:super_admin,editor'])->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware(['role:super_admin,editor'])->group(function () {
         Route::resource('projects', \App\Http\Controllers\Admin\ProjectController::class)->except(['show']);
         Route::resource('activities', \App\Http\Controllers\Admin\ActivityController::class)->except(['show']);
         Route::resource('achievements', \App\Http\Controllers\Admin\AchievementController::class)->except(['show']);
@@ -139,6 +139,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('team-members', \App\Http\Controllers\Admin\TeamMemberController::class)->except(['show']);
         Route::resource('ekstrakurikuler', \App\Http\Controllers\Admin\EkstrakurikulerController::class)->except(['show']);
         Route::resource('donation-embeds', \App\Http\Controllers\Admin\DonationEmbedController::class)->except(['show']);
+        Route::resource('facilities', \App\Http\Controllers\FacilityController::class)->except(['show']);
+        Route::post('facilities/{facility}/toggle-active', [\App\Http\Controllers\FacilityController::class, 'toggleActive'])->name('facilities.toggle-active');
     });
 
     // Articles Management Routes

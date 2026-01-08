@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
 
         // Seed content
         $this->call([
+            SiteSettingsSeeder::class,
             ProfilePageSeeder::class,
             ProjectSeeder::class,
             ActivitySeeder::class,

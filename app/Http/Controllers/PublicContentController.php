@@ -8,6 +8,7 @@ use App\Models\Activity;
 use App\Models\EkstrakurikulerItem;
 use App\Models\Achievement;
 use App\Models\Event;
+use App\Models\Facility;
 use App\Models\LiterasiContent;
 use App\Models\Testimony;
 use Illuminate\Http\Request;
@@ -63,7 +64,13 @@ class PublicContentController extends Controller
 
     public function fasilitas()
     {
-        return Inertia::render('public/fasilitas');
+        $facilities = Facility::active()->ordered()->get();
+        $categories = Facility::getCategories();
+
+        return Inertia::render('public/fasilitas', [
+            'facilities' => $facilities,
+            'categories' => $categories,
+        ]);
     }
 
     public function events()

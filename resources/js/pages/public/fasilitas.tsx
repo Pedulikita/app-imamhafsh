@@ -1,6 +1,6 @@
 import PublicLayout from '@/layouts/public-layout';
 import { Head } from '@inertiajs/react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 type FacilityItem = {
@@ -15,43 +15,36 @@ type FacilityItem = {
         | 'BQ Arena'
         | 'Masjid'
         | 'Fasilitas Lainnya';
+    is_active: boolean;
 };
 
-const categories: FacilityItem['category'][] = [
-    'Eksterior',
-    'Asrama',
-    'Kelas & Office',
-    'BQ Mart & Resto',
-    'BQ Arena',
-    'Masjid',
-    'Fasilitas Lainnya',
-];
+interface Props {
+    facilities: FacilityItem[];
+    categories: FacilityItem['category'][];
+}
 
-const allFacilities: FacilityItem[] = [
-    { id: 1, title: 'Gerbang Utama', image: '/images/PRESTAS.png', category: 'Eksterior' },
-    { id: 2, title: 'Gedung Utama', image: '/images/PRESTAS.png', category: 'Eksterior' },
-    { id: 3, title: 'Area Hijau', image: '/images/PRESTAS.png', category: 'Eksterior' },
-    { id: 4, title: 'Asrama Putra', image: '/images/PRESTAS.png', category: 'Asrama' },
-    { id: 5, title: 'Asrama Putri', image: '/images/PRESTAS.png', category: 'Asrama' },
-    { id: 6, title: 'Ruang Kelas', image: '/images/PRESTAS.png', category: 'Kelas & Office' },
-    { id: 7, title: 'Ruang Guru', image: '/images/PRESTAS.png', category: 'Kelas & Office' },
-    { id: 8, title: 'BQ Mart', image: '/images/PRESTAS.png', category: 'BQ Mart & Resto' },
-    { id: 9, title: 'Resto Santri', image: '/images/PRESTAS.png', category: 'BQ Mart & Resto' },
-    { id: 10, title: 'Lapangan Serbaguna', image: '/images/PRESTAS.png', category: 'BQ Arena' },
-    { id: 11, title: 'Arena Olahraga', image: '/images/PRESTAS.png', category: 'BQ Arena' },
-    { id: 12, title: 'Masjid', image: '/images/PRESTAS.png', category: 'Masjid' },
-    { id: 13, title: 'Perpustakaan', image: '/images/PRESTAS.png', category: 'Fasilitas Lainnya' },
-    { id: 14, title: 'Laboratorium IT', image: '/images/PRESTAS.png', category: 'Fasilitas Lainnya' },
-    { id: 15, title: 'Ruang Kreatif', image: '/images/PRESTAS.png', category: 'Fasilitas Lainnya' },
-];
-
-export default function Fasilitas() {
-    const [activeTab, setActiveTab] = useState<FacilityItem['category']>('Eksterior');
+export default function Fasilitas({ facilities, categories }: Props) {
+    const [activeTab, setActiveTab] = useState<FacilityItem['category']>(categories[0] || 'Eksterior');
+    const [selectedImage, setSelectedImage] = useState<FacilityItem | null>(null);
 
     const filteredFacilities = useMemo(
-        () => allFacilities.filter((f) => f.category === activeTab),
-        [activeTab]
+        () => facilities.filter((f) => f.category === activeTab),
+        [activeTab, facilities]
     );
+
+    const currentImageIndex = selectedImage ? filteredFacilities.findIndex(f => f.id === selectedImage.id) : -1;
+
+    const handlePrevImage = () => {
+        if (currentImageIndex > 0) {
+            setSelectedImage(filteredFacilities[currentImageIndex - 1]);
+        }
+    };
+
+    const handleNextImage = () => {
+        if (currentImageIndex < filteredFacilities.length - 1) {
+            setSelectedImage(filteredFacilities[currentImageIndex + 1]);
+        }
+    };
 
     return (
         <PublicLayout>
@@ -100,7 +93,8 @@ export default function Fasilitas() {
                     {filteredFacilities.map((item) => (
                         <div
                             key={item.id}
-                            className="group overflow-hidden rounded-xl bg-white shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg"
+                            className="group overflow-hidden rounded-xl bg-white shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                            onClick={() => setSelectedImage(item)}
                         >
                             <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
                                 <img
@@ -109,6 +103,9 @@ export default function Fasilitas() {
                                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                             </div>
+                            <div className="p-3">
+                                <p className="text-sm font-medium text-slate-700">{item.title}</p>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -116,6 +113,65 @@ export default function Fasilitas() {
                 {filteredFacilities.length === 0 && (
                     <div className="py-20 text-center text-slate-500">
                         <p>Belum ada dokumentasi untuk kategori ini.</p>
+                    </div>
+                )}
+
+                {/* Modal Lightbox */}
+                {selectedImage && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                        onClick={() => setSelectedImage(null)}
+                    >
+                        <div
+                            className="relative max-h-[90vh] max-w-4xl w-full"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setSelectedImage(null)}
+                                className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+                            >
+                                <X className="size-8" />
+                            </button>
+
+                            {/* Image */}
+                            <div className="relative bg-black rounded-lg overflow-hidden">
+                                <img
+                                    src={selectedImage.image}
+                                    alt={selectedImage.title}
+                                    className="w-full h-auto max-h-[80vh] object-contain"
+                                />
+
+                                {/* Title */}
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
+                                    <h3 className="text-xl font-semibold text-white">{selectedImage.title}</h3>
+                                </div>
+
+                                {/* Navigation Arrows */}
+                                {currentImageIndex > 0 && (
+                                    <button
+                                        onClick={handlePrevImage}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition-colors"
+                                    >
+                                        <ChevronLeft className="size-6" />
+                                    </button>
+                                )}
+
+                                {currentImageIndex < filteredFacilities.length - 1 && (
+                                    <button
+                                        onClick={handleNextImage}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition-colors"
+                                    >
+                                        <ChevronRight className="size-6" />
+                                    </button>
+                                )}
+
+                                {/* Image Counter */}
+                                <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                                    {currentImageIndex + 1} / {filteredFacilities.length}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
