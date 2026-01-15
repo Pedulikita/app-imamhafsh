@@ -16,7 +16,7 @@ class KebijakanContentSeeder extends Seeder
             'hero_badge' => 'Kebijakan Dan Norma',
             'hero_title' => 'Imam Hafsh Tanpa Bullying & LGBT',
             'hero_subtitle' => 'Menciptakan lingkungan pendidikan yang aman, nyaman, dan kondusif bagi seluruh santri',
-            'hero_image' => '/images/Pendidikan.jpg',
+            'hero_image' => 'images/Pendidikan.jpg',
             
             'intro_title' => 'Komitmen Kami',
             'intro_content' => '<p>Dengan penuh keyakinan dan keteguhan, Imam Hafsh Islamic Boarding School menegaskan komitmennya untuk melawan segala bentuk bullying dan aktivitas menyimpang LGBT. Kami menempatkan keamanan dan kenyamanan santri sebagai prioritas utama dalam setiap aspek pembelajaran dan pengasuhan.</p>',
@@ -31,7 +31,7 @@ class KebijakanContentSeeder extends Seeder
                 'Konseling dan pendampingan untuk korban',
                 'Program pembinaan karakter berkelanjutan',
             ],
-            'bullying_image' => '/images/Banner-Page.png',
+            'bullying_image' => 'images/Banner-Page.png',
             
             'lgbt_title' => 'Kebijakan Anti LGBT',
             'lgbt_content' => '<p>Berdasarkan nilai-nilai Islam dan norma sosial, kami menerapkan kebijakan yang tegas terhadap aktivitas LGBT sambil tetap menjunjung tinggi martabat setiap individu.</p>',
@@ -43,7 +43,7 @@ class KebijakanContentSeeder extends Seeder
                 'Kerjasama dengan orang tua dalam pengawasan',
                 'Konseling islami untuk yang membutuhkan',
             ],
-            'lgbt_image' => '/images/PRESTAS.png',
+            'lgbt_image' => 'images/PRESTAS.png',
             
             'environment_title' => 'Lingkungan Aman & Nyaman',
             'environment_content' => '<p>Kami menciptakan lingkungan yang aman, nyaman, dan kondusif untuk perkembangan optimal santri, baik secara akademik, spiritual, maupun sosial.</p>',
@@ -69,7 +69,7 @@ class KebijakanContentSeeder extends Seeder
                     'description' => 'Program pengembangan karakter islami yang konsisten'
                 ],
             ],
-            'environment_image' => '/images/PRESTAS.png',
+            'environment_image' => 'images/PRESTAS.png',
             
             'commitment_title' => 'Komitmen Kami Kepada Orang Tua',
             'commitment_content' => '<p>Kami berkomitmen penuh untuk menjaga amanah orang tua dengan menciptakan lingkungan pendidikan yang aman, islami, dan kondusif.</p>',
