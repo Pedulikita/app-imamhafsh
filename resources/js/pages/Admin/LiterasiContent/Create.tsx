@@ -138,7 +138,7 @@ export default function Create() {
                             <div className="space-y-2">
                                 <Label htmlFor="main_content">Main Content *</Label>
                                 <RichTextEditor
-                                    value={data.main_content}
+                                    content={data.main_content}
                                     onChange={(value) => setData('main_content', value)}
                                     placeholder="Enter main content"
                                 />

@@ -170,6 +170,10 @@ const adminNavItems: NavItemWithChildren[] = [
                 title: 'Terms & Conditions',
                 href: '/admin/legal-content/terms',
             },
+            {
+                title: 'Kebijakan & Norma',
+                href: '/admin/kebijakan-content',
+            },
         ],
     },
     {

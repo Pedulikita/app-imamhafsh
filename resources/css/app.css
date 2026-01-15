@@ -142,6 +142,18 @@
     }
 }
 
+/* Remove any dashed/dotted lines from prose content */
+.prose,
+.prose-lg {
+    text-decoration: none !important;
+}
+
+.prose *,
+.prose-lg * {
+    border-style: solid !important;
+    text-decoration-style: solid !important;
+}
+
 /* TipTap Editor Styles */
 .ProseMirror {
     outline: none;

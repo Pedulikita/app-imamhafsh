@@ -31,6 +31,7 @@ Route::get('/about', [\App\Http\Controllers\PublicPageController::class, 'about'
 Route::get('/nilai', [\App\Http\Controllers\PublicPageController::class, 'nilai'])->name('nilai');
 Route::get('/mutu', [\App\Http\Controllers\PublicPageController::class, 'mutu'])->name('mutu');
 Route::get('/kurikulum', [\App\Http\Controllers\PublicPageController::class, 'kurikulum'])->name('kurikulum');
+Route::get('/kebijakan', [\App\Http\Controllers\PublicPageController::class, 'kebijakan'])->name('kebijakan');
 
 Route::get('/team', [\App\Http\Controllers\PublicContentController::class, 'team'])->name('team');
 
@@ -205,6 +206,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('ekstrakurikuler-content', [\App\Http\Controllers\Admin\EkstrakurikulerContentController::class, 'edit'])->name('ekstrakurikuler-content.edit');
         Route::put('ekstrakurikuler-content', [\App\Http\Controllers\Admin\EkstrakurikulerContentController::class, 'update'])->name('ekstrakurikuler-content.update');
         Route::post('ekstrakurikuler-content/upload-image', [\App\Http\Controllers\Admin\EkstrakurikulerContentController::class, 'uploadImage'])->name('ekstrakurikuler-content.upload-image');
+        
+        // Kebijakan Content Management
+        Route::resource('kebijakan-content', \App\Http\Controllers\Admin\KebijakanContentController::class)->except(['show']);
         
         // Legal Content Management
         Route::get('legal-content/privacy', [\App\Http\Controllers\Admin\LegalContentController::class, 'editPrivacy'])->name('legal-content.privacy.edit');

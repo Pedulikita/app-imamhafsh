@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfilePage;
 use App\Models\SiteSetting;
+use App\Models\KebijakanContent;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -77,6 +78,15 @@ class PublicPageController extends Controller
         $content = \App\Models\LegalContent::getValue('terms_content', '');
         
         return Inertia::render('public/terms', [
+            'content' => $content,
+        ]);
+    }
+
+    public function kebijakan()
+    {
+        $content = KebijakanContent::active()->ordered()->first();
+        
+        return Inertia::render('public/kebijakan', [
             'content' => $content,
         ]);
     }

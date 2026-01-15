@@ -40,18 +40,45 @@ interface Props {
 }
 
 export default function Edit({ content }: Props) {
+    // Ensure features and statistics are properly parsed arrays
+    const parseArray = (value: any): any[] => {
+        if (!value) return [];
+        if (Array.isArray(value)) {
+            // Ensure each item has string values, not objects
+            return value.map(item => {
+                if (typeof item === 'object' && item !== null) {
+                    const cleaned: any = {};
+                    for (const key in item) {
+                        cleaned[key] = typeof item[key] === 'object' ? JSON.stringify(item[key]) : String(item[key] || '');
+                    }
+                    return cleaned;
+                }
+                return item;
+            });
+        }
+        if (typeof value === 'string') {
+            try {
+                const parsed = JSON.parse(value);
+                return Array.isArray(parsed) ? parseArray(parsed) : [];
+            } catch {
+                return [];
+            }
+        }
+        return [];
+    };
+
     const { data, setData, post, processing, errors } = useForm({
         title: content.title,
         subtitle: content.subtitle || '',
         description: content.description || '',
         main_content: content.main_content,
         features_title: content.features_title || 'Keunggulan Program Literasi',
-        features: content.features || [],
+        features: parseArray(content.features),
         statistics_title: content.statistics_title || 'Statistik Literasi',
-        statistics: content.statistics || [],
+        statistics: parseArray(content.statistics),
         image: null as File | null,
         image_path: content.image_path || '',
-        gallery_images: content.gallery_images || [],
+        gallery_images: parseArray(content.gallery_images),
         meta_title: content.meta_title || '',
         meta_description: content.meta_description || '',
         is_active: content.is_active,
@@ -161,7 +188,7 @@ export default function Edit({ content }: Props) {
                             <div className="space-y-2">
                                 <Label htmlFor="main_content">Main Content *</Label>
                                 <RichTextEditor
-                                    value={data.main_content}
+                                    content={data.main_content}
                                     onChange={(value) => setData('main_content', value)}
                                     placeholder="Enter main content"
                                 />

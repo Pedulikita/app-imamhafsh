@@ -65,6 +65,7 @@ export default function AllArticles({ articles = [] }: Props) {
                 />
             </div>
 
+            <div className="bg-white" style={{ backgroundImage: 'none', backgroundAttachment: 'scroll' }}>
             <div className="container mx-auto max-w-7xl px-4 py-16 md:px-6 lg:px-8">
                 <div className="mb-10 text-center">
                     <div className="mb-4 inline-block rounded-full bg-blue-100 px-6 py-2 text-sm font-bold text-blue-600">
@@ -98,7 +99,7 @@ export default function AllArticles({ articles = [] }: Props) {
                     {currentItems.map((a) => (
                         <article
                             key={a.id}
-                            className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:shadow-lg"
+                            className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-lg"
                         >
                             <div className="relative h-40 w-full overflow-hidden bg-slate-100 sm:h-48">
                                 <OptimizedImage
@@ -214,6 +215,7 @@ export default function AllArticles({ articles = [] }: Props) {
                         ›
                     </button>
                 </div>
+            </div>
             </div>
         </PublicLayout>
     );
