@@ -47,6 +47,10 @@ const iconMap: Record<string, any> = {
 };
 
 export default function Kebijakan({ content }: Props) {
+    // Debug: log data yang diterima
+    console.log('Kebijakan Content:', content);
+    console.log('Environment Features:', content?.environment_features);
+    
     if (!content) {
         return (
             <PublicLayout>
@@ -211,12 +215,30 @@ export default function Kebijakan({ content }: Props) {
                     </div>
 
                     <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {content.environment_features.map((feature, index) => {
-                            // Parse feature string format: "icon|title|description"
-                            const featureData = typeof feature === 'string' 
-                                ? feature.split('|') 
-                                : [feature.icon, feature.title, feature.description];
-                            const [iconName, title, description] = featureData;
+                        {content.environment_features && content.environment_features.length > 0 ? content.environment_features.map((feature, index) => {
+                            // Parse feature - it could be a string (JSON or pipe-delimited) or object
+                            let iconName, title, description;
+                            
+                            if (typeof feature === 'string') {
+                                // Try parsing as JSON first (for double-encoded data)
+                                try {
+                                    const parsed = JSON.parse(feature);
+                                    iconName = parsed.icon;
+                                    title = parsed.title;
+                                    description = parsed.description;
+                                } catch {
+                                    // Fall back to pipe-delimited format
+                                    const parts = feature.split('|');
+                                    iconName = parts[0];
+                                    title = parts[1];
+                                    description = parts[2];
+                                }
+                            } else {
+                                iconName = feature.icon;
+                                title = feature.title;
+                                description = feature.description;
+                            }
+                            
                             const Icon = iconMap[iconName] || Shield;
                             
                             return (
@@ -235,7 +257,11 @@ export default function Kebijakan({ content }: Props) {
                                     </p>
                                 </div>
                             );
-                        })}
+                        }) : (
+                            <div className="col-span-full text-center text-muted-foreground">
+                                <p>Belum ada fitur lingkungan yang ditambahkan.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

@@ -86,6 +86,37 @@ class PublicPageController extends Controller
     {
         $content = KebijakanContent::active()->ordered()->first();
         
+        if ($content) {
+            $content = [
+                'id' => $content->id,
+                'hero_badge' => $content->hero_badge,
+                'hero_title' => $content->hero_title,
+                'hero_subtitle' => $content->hero_subtitle,
+                'hero_image' => $content->hero_image,
+                'hero_image_url' => $content->hero_image_url,
+                'intro_title' => $content->intro_title,
+                'intro_content' => $content->intro_content,
+                'bullying_title' => $content->bullying_title,
+                'bullying_content' => $content->bullying_content,
+                'bullying_points' => $content->bullying_points,
+                'bullying_image' => $content->bullying_image,
+                'bullying_image_url' => $content->bullying_image_url,
+                'lgbt_title' => $content->lgbt_title,
+                'lgbt_content' => $content->lgbt_content,
+                'lgbt_points' => $content->lgbt_points,
+                'lgbt_image' => $content->lgbt_image,
+                'lgbt_image_url' => $content->lgbt_image_url,
+                'environment_title' => $content->environment_title,
+                'environment_content' => $content->environment_content,
+                'environment_features' => $content->environment_features,
+                'environment_image' => $content->environment_image,
+                'environment_image_url' => $content->environment_image_url,
+                'commitment_title' => $content->commitment_title,
+                'commitment_content' => $content->commitment_content,
+                'commitment_items' => $content->commitment_items,
+            ];
+        }
+        
         return Inertia::render('public/kebijakan', [
             'content' => $content,
         ]);

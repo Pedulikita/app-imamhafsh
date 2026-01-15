@@ -14,7 +14,18 @@ class KebijakanContentController extends Controller
     {
         $contents = KebijakanContent::orderBy('order', 'asc')
             ->orderBy('id', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($content) {
+                return [
+                    'id' => $content->id,
+                    'hero_badge' => $content->hero_badge,
+                    'hero_title' => $content->hero_title,
+                    'hero_subtitle' => $content->hero_subtitle,
+                    'hero_image' => $content->hero_image_url,
+                    'is_active' => $content->is_active,
+                    'order' => $content->order,
+                ];
+            });
 
         return Inertia::render('Admin/KebijakanContent/Index', [
             'contents' => $contents,
@@ -80,7 +91,32 @@ class KebijakanContentController extends Controller
     public function edit(KebijakanContent $kebijakanContent)
     {
         return Inertia::render('Admin/KebijakanContent/Edit', [
-            'content' => $kebijakanContent,
+            'content' => [
+                'id' => $kebijakanContent->id,
+                'hero_badge' => $kebijakanContent->hero_badge,
+                'hero_title' => $kebijakanContent->hero_title,
+                'hero_subtitle' => $kebijakanContent->hero_subtitle,
+                'hero_image' => $kebijakanContent->hero_image_url,
+                'intro_title' => $kebijakanContent->intro_title,
+                'intro_content' => $kebijakanContent->intro_content,
+                'bullying_title' => $kebijakanContent->bullying_title,
+                'bullying_content' => $kebijakanContent->bullying_content,
+                'bullying_points' => $kebijakanContent->bullying_points,
+                'bullying_image' => $kebijakanContent->bullying_image_url,
+                'lgbt_title' => $kebijakanContent->lgbt_title,
+                'lgbt_content' => $kebijakanContent->lgbt_content,
+                'lgbt_points' => $kebijakanContent->lgbt_points,
+                'lgbt_image' => $kebijakanContent->lgbt_image_url,
+                'environment_title' => $kebijakanContent->environment_title,
+                'environment_content' => $kebijakanContent->environment_content,
+                'environment_features' => $kebijakanContent->environment_features,
+                'environment_image' => $kebijakanContent->environment_image_url,
+                'commitment_title' => $kebijakanContent->commitment_title,
+                'commitment_content' => $kebijakanContent->commitment_content,
+                'commitment_items' => $kebijakanContent->commitment_items,
+                'order' => $kebijakanContent->order,
+                'is_active' => $kebijakanContent->is_active,
+            ],
         ]);
     }
 

@@ -107,7 +107,9 @@ export default function Edit({ content }: Props) {
     // Temporary inputs for arrays
     const [newBullyingPoint, setNewBullyingPoint] = useState('');
     const [newLgbtPoint, setNewLgbtPoint] = useState('');
-    const [newEnvironmentFeature, setNewEnvironmentFeature] = useState('');
+    const [newEnvironmentIcon, setNewEnvironmentIcon] = useState('');
+    const [newEnvironmentTitle, setNewEnvironmentTitle] = useState('');
+    const [newEnvironmentDescription, setNewEnvironmentDescription] = useState('');
     const [newCommitmentItem, setNewCommitmentItem] = useState('');
 
     const handleImageChange = (
@@ -149,9 +151,19 @@ export default function Edit({ content }: Props) {
     };
 
     const addEnvironmentFeature = () => {
-        if (newEnvironmentFeature.trim()) {
-            setData('environment_features', [...data.environment_features, newEnvironmentFeature.trim()]);
-            setNewEnvironmentFeature('');
+        if (newEnvironmentIcon.trim() && newEnvironmentTitle.trim() && newEnvironmentDescription.trim()) {
+            const featureToAdd = JSON.stringify({
+                icon: newEnvironmentIcon.trim(),
+                title: newEnvironmentTitle.trim(),
+                description: newEnvironmentDescription.trim()
+            });
+            
+            setData('environment_features', [...data.environment_features, featureToAdd]);
+            setNewEnvironmentIcon('');
+            setNewEnvironmentTitle('');
+            setNewEnvironmentDescription('');
+        } else {
+            alert('Semua field (Icon, Title, Description) harus diisi!');
         }
     };
 
@@ -248,7 +260,7 @@ export default function Edit({ content }: Props) {
                                     <div className="mb-2">
                                         <p className="text-sm text-muted-foreground mb-1">Current image:</p>
                                         <img
-                                            src={content.hero_image.startsWith('http') ? content.hero_image : `/storage/${content.hero_image}`}
+                                            src={content.hero_image}
                                             alt="Current"
                                             className="h-48 w-full rounded object-cover"
                                         />
@@ -497,25 +509,48 @@ export default function Edit({ content }: Props) {
 
                         <div className="space-y-2">
                             <Label>Environment Features</Label>
-                            <div className="flex gap-2">
-                                <Input
-                                    value={newEnvironmentFeature}
-                                    onChange={(e) => setNewEnvironmentFeature(e.target.value)}
-                                    placeholder="Tambah fitur lingkungan (format: icon|title|description)"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            addEnvironmentFeature();
-                                        }
-                                    }}
-                                />
-                                <Button type="button" onClick={addEnvironmentFeature}>
-                                    <Plus className="h-4 w-4" />
+                            <div className="space-y-3 rounded-lg border p-4">
+                                <div className="grid gap-3">
+                                    <div>
+                                        <Label htmlFor="env_icon" className="text-sm">Icon</Label>
+                                        <select
+                                            id="env_icon"
+                                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                            value={newEnvironmentIcon}
+                                            onChange={(e) => setNewEnvironmentIcon(e.target.value)}
+                                        >
+                                            <option value="">Pilih Icon</option>
+                                            <option value="shield-check">🛡️ Shield Check</option>
+                                            <option value="users">👥 Users</option>
+                                            <option value="heart">❤️ Heart</option>
+                                            <option value="book-open">📖 Book Open</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="env_title" className="text-sm">Title</Label>
+                                        <Input
+                                            id="env_title"
+                                            value={newEnvironmentTitle}
+                                            onChange={(e) => setNewEnvironmentTitle(e.target.value)}
+                                            placeholder="e.g., Keamanan 24/7"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="env_desc" className="text-sm">Description</Label>
+                                        <Textarea
+                                            id="env_desc"
+                                            value={newEnvironmentDescription}
+                                            onChange={(e) => setNewEnvironmentDescription(e.target.value)}
+                                            placeholder="e.g., Sistem pengawasan dan keamanan selama 24 jam penuh"
+                                            rows={2}
+                                        />
+                                    </div>
+                                </div>
+                                <Button type="button" onClick={addEnvironmentFeature} className="w-full">
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Tambah Feature
                                 </Button>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                Format: shield-check|Title|Description
-                            </p>
                             <div className="mt-2 space-y-2">
                                 {data.environment_features.map((feature, index) => (
                                     <div key={index} className="flex items-center gap-2 bg-muted p-2 rounded">
