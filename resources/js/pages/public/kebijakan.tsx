@@ -216,27 +216,37 @@ export default function Kebijakan({ content }: Props) {
 
                     <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         {content.environment_features && content.environment_features.length > 0 ? content.environment_features.map((feature, index) => {
+                            // Debug individual feature
+                            console.log(`Feature ${index}:`, feature, 'Type:', typeof feature);
+                            
                             // Parse feature - it could be a string (JSON or pipe-delimited) or object
-                            let iconName, title, description;
+                            let iconName = 'shield-check';
+                            let title = 'Feature';
+                            let description = 'Description';
                             
                             if (typeof feature === 'string') {
                                 // Try parsing as JSON first (for double-encoded data)
                                 try {
                                     const parsed = JSON.parse(feature);
-                                    iconName = parsed.icon;
-                                    title = parsed.title;
-                                    description = parsed.description;
-                                } catch {
+                                    console.log(`Parsed feature ${index}:`, parsed);
+                                    iconName = parsed.icon || iconName;
+                                    title = parsed.title || title;
+                                    description = parsed.description || description;
+                                } catch (e) {
+                                    console.log(`JSON parse failed for feature ${index}, trying pipe-delimited:`, e);
                                     // Fall back to pipe-delimited format
                                     const parts = feature.split('|');
-                                    iconName = parts[0];
-                                    title = parts[1];
-                                    description = parts[2];
+                                    if (parts.length >= 3) {
+                                        iconName = parts[0] || iconName;
+                                        title = parts[1] || title;
+                                        description = parts[2] || description;
+                                    }
+                                    console.log(`Pipe-delimited result:`, { iconName, title, description });
                                 }
-                            } else {
-                                iconName = feature.icon;
-                                title = feature.title;
-                                description = feature.description;
+                            } else if (feature && typeof feature === 'object') {
+                                iconName = feature.icon || iconName;
+                                title = feature.title || title;
+                                description = feature.description || description;
                             }
                             
                             const Icon = iconMap[iconName] || Shield;

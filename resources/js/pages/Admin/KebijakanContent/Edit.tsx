@@ -260,7 +260,7 @@ export default function Edit({ content }: Props) {
                                     <div className="mb-2">
                                         <p className="text-sm text-muted-foreground mb-1">Current image:</p>
                                         <img
-                                            src={content.hero_image}
+                                            src={content.hero_image.startsWith('http') ? content.hero_image : `/storage/${content.hero_image}`}
                                             alt="Current"
                                             className="h-48 w-full rounded object-cover"
                                         />

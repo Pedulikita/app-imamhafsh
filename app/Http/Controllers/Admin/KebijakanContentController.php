@@ -90,6 +90,9 @@ class KebijakanContentController extends Controller
 
     public function edit(KebijakanContent $kebijakanContent)
     {
+        // Force fresh data from database
+        $kebijakanContent->refresh();
+        
         return Inertia::render('Admin/KebijakanContent/Edit', [
             'content' => [
                 'id' => $kebijakanContent->id,
@@ -154,6 +157,8 @@ class KebijakanContentController extends Controller
                 Storage::disk('public')->delete($kebijakanContent->hero_image);
             }
             $validated['hero_image'] = $request->file('hero_image')->store('kebijakan', 'public');
+        } else {
+            unset($validated['hero_image']);
         }
 
         if ($request->hasFile('bullying_image')) {
@@ -161,6 +166,8 @@ class KebijakanContentController extends Controller
                 Storage::disk('public')->delete($kebijakanContent->bullying_image);
             }
             $validated['bullying_image'] = $request->file('bullying_image')->store('kebijakan', 'public');
+        } else {
+            unset($validated['bullying_image']);
         }
 
         if ($request->hasFile('lgbt_image')) {
@@ -168,6 +175,8 @@ class KebijakanContentController extends Controller
                 Storage::disk('public')->delete($kebijakanContent->lgbt_image);
             }
             $validated['lgbt_image'] = $request->file('lgbt_image')->store('kebijakan', 'public');
+        } else {
+            unset($validated['lgbt_image']);
         }
 
         if ($request->hasFile('environment_image')) {
@@ -175,9 +184,21 @@ class KebijakanContentController extends Controller
                 Storage::disk('public')->delete($kebijakanContent->environment_image);
             }
             $validated['environment_image'] = $request->file('environment_image')->store('kebijakan', 'public');
+        } else {
+            unset($validated['environment_image']);
         }
 
         $kebijakanContent->update($validated);
+        
+        // Force refresh from database to ensure data is saved
+        $kebijakanContent->refresh();
+        
+        // Log the update for debugging
+        \Log::info('KebijakanContent updated', [
+            'id' => $kebijakanContent->id,
+            'hero_title' => $kebijakanContent->hero_title,
+            'environment_features_count' => is_array($kebijakanContent->environment_features) ? count($kebijakanContent->environment_features) : 0,
+        ]);
 
         return redirect()->route('admin.kebijakan-content.index')
             ->with('success', 'Konten kebijakan berhasil diupdate.');
