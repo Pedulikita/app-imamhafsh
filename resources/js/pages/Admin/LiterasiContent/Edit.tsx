@@ -15,6 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Save } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import InputError from '@/components/input-error';
+import { RichTextEditor } from '@/components/rich-text-editor';
 
 interface LiterasiContent {
     id: number;
@@ -22,7 +23,9 @@ interface LiterasiContent {
     subtitle?: string;
     description?: string;
     main_content: string;
+    features_title?: string;
     features?: Array<{ title: string; description: string; icon?: string }>;
+    statistics_title?: string;
     statistics?: Array<{ label: string; value: string }>;
     image_path?: string;
     gallery_images?: string[];
@@ -42,7 +45,9 @@ export default function Edit({ content }: Props) {
         subtitle: content.subtitle || '',
         description: content.description || '',
         main_content: content.main_content,
+        features_title: content.features_title || 'Keunggulan Program Literasi',
         features: content.features || [],
+        statistics_title: content.statistics_title || 'Statistik Literasi',
         statistics: content.statistics || [],
         image: null as File | null,
         image_path: content.image_path || '',
@@ -155,14 +160,143 @@ export default function Edit({ content }: Props) {
 
                             <div className="space-y-2">
                                 <Label htmlFor="main_content">Main Content *</Label>
-                                <Textarea
-                                    id="main_content"
+                                <RichTextEditor
                                     value={data.main_content}
-                                    onChange={(e) => setData('main_content', e.target.value)}
+                                    onChange={(value) => setData('main_content', value)}
                                     placeholder="Enter main content"
-                                    rows={10}
                                 />
                                 <InputError message={errors.main_content} />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Features Section</CardTitle>
+                            <CardDescription>
+                                Keunggulan program literasi (opsional)
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="features_title">Judul Section Features</Label>
+                                <Input
+                                    id="features_title"
+                                    value={data.features_title}
+                                    onChange={(e) => setData('features_title', e.target.value)}
+                                    placeholder="Keunggulan Program Literasi"
+                                />
+                                <InputError message={errors.features_title} />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label>Daftar Features</Label>
+                                    <Button type="button" variant="outline" size="sm" onClick={addFeature}>
+                                        Add Feature
+                                    </Button>
+                                </div>
+                                {data.features.map((feature, index) => (
+                                    <div key={index} className="border rounded-lg p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-medium">Feature {index + 1}</span>
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => removeFeature(index)}
+                                            >
+                                                Remove
+                                            </Button>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Icon (emoji)</Label>
+                                            <Input
+                                                value={feature.icon || ''}
+                                                onChange={(e) => updateFeature(index, 'icon', e.target.value)}
+                                                placeholder="📚"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Title</Label>
+                                            <Input
+                                                value={feature.title}
+                                                onChange={(e) => updateFeature(index, 'title', e.target.value)}
+                                                placeholder="Feature title"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Description</Label>
+                                            <Textarea
+                                                value={feature.description}
+                                                onChange={(e) => updateFeature(index, 'description', e.target.value)}
+                                                placeholder="Feature description"
+                                                rows={2}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Statistics Section</CardTitle>
+                            <CardDescription>
+                                Statistik literasi (opsional)
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="statistics_title">Judul Section Statistics</Label>
+                                <Input
+                                    id="statistics_title"
+                                    value={data.statistics_title}
+                                    onChange={(e) => setData('statistics_title', e.target.value)}
+                                    placeholder="Statistik Literasi"
+                                />
+                                <InputError message={errors.statistics_title} />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label>Daftar Statistics</Label>
+                                    <Button type="button" variant="outline" size="sm" onClick={addStatistic}>
+                                        Add Statistic
+                                    </Button>
+                                </div>
+                                {data.statistics.map((stat, index) => (
+                                    <div key={index} className="border rounded-lg p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-medium">Statistic {index + 1}</span>
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => removeStatistic(index)}
+                                            >
+                                                Remove
+                                            </Button>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Value (angka)</Label>
+                                            <Input
+                                                value={stat.value}
+                                                onChange={(e) => updateStatistic(index, 'value', e.target.value)}
+                                                placeholder="1,469+"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Label</Label>
+                                            <Input
+                                                value={stat.label}
+                                                onChange={(e) => updateStatistic(index, 'label', e.target.value)}
+                                                placeholder="Total Koleksi Buku"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </CardContent>
                     </Card>

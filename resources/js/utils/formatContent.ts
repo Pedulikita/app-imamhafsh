@@ -1,6 +1,6 @@
 /**
  * Format article content with proper paragraphs and spacing
- * Handles both plain text and HTML content
+ * Handles both plain text and HTML content from text editors
  */
 export const formatArticleContent = (content: string): string => {
     if (!content) return '';
@@ -9,17 +9,33 @@ export const formatArticleContent = (content: string): string => {
     const hasHTMLTags = /<[^>]*>/.test(content);
 
     if (hasHTMLTags) {
-        // Already has HTML, just ensure proper spacing between tags
-        return content
-            .replace(/\n+/g, '') // Remove extra line breaks
-            .replace(/(<\/p>)(\s*)(<[p|h|ul|ol|blockquote|div])/g, '$1$3') // Fix spacing between block elements
+        // Already has HTML from rich text editor
+        let formatted = content;
+
+        // Clean up excessive whitespace while preserving intentional spacing
+        formatted = formatted
+            .replace(/\n+/g, ' ') // Convert line breaks to spaces
+            .replace(/\s+/g, ' ') // Normalize multiple spaces
+            .replace(/>\s+</g, '><') // Remove spaces between tags
             .trim();
+
+        // Ensure proper spacing for block elements
+        formatted = formatted
+            .replace(/(<\/(p|div|h[1-6]|ul|ol|li|blockquote)>)/gi, '$1\n')
+            .replace(/(<(p|div|h[1-6]|ul|ol|li|blockquote)[^>]*>)/gi, '\n$1')
+            .replace(/^\n+|\n+$/g, '') // Remove leading/trailing newlines
+            .replace(/\n{3,}/g, '\n\n'); // Max 2 consecutive newlines
+
+        return formatted;
     }
 
     // Convert plain text to HTML paragraphs
     return content
         .split(/\n{2,}/) // Split by double line breaks (paragraphs)
         .map((paragraph) => {
+            const trimmed = paragraph.trim();
+            if (!trimmed) return '';
+
             return paragraph
                 .trim()
                 .split(/\n/) // Split by single line breaks
@@ -29,11 +45,8 @@ export const formatArticleContent = (content: string): string => {
                 .replace(/^/, '<p>')
                 .replace(/$/, '</p>');
         })
-        .join('')
-        .replace(/(<p>.*?<\/p>)/gs, (match) => {
-            // Wrap content with proper <p> tags
-            return match.replace(/<br \/>$/, '');
-        })
+        .filter((p) => p.length > 0)
+        .join('\n')
         .trim();
 };
 

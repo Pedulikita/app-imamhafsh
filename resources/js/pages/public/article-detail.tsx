@@ -254,7 +254,7 @@ export default function ArticleDetail({
                             {/* Article Content */}
                             <div className="prose prose-lg max-w-none text-slate-700 space-y-4">
                                 <div 
-                                    className="content-wrapper"
+                                    className="article-content"
                                     dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content) }} 
                                 />
                             </div>

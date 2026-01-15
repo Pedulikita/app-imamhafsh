@@ -21,6 +21,7 @@ class LiterasiContentSeeder extends Seeder
 Gerakan Literasi Sekolah merupakan program dari Kementrian Pendidikan dan Kebudayaan Republik Indonesia sebagai bentuk usaha untuk menumbuhkan rasa cinta siswa sekolah dalam membaca buku. Selain itu, Gerakan Literasi Sekolah juga merupakan upaya pemerintah dalam membentuk dan menumbuhkan budi pekerti anak.
 
 Program Gerakan Literasi Sekolah dikemas dan dikembangkan berdasarkan Permendikbud Nomor 21 Tahun 2015 tentang Penumbuhan Budi Pekerti. Gerakan Literasi Sekolah bersifat partisipatif dengan melibatkan warga sekolah seperti peserta didik, guru, kepala sekolah, tenaga kependidikan, pengawas sekolah, komite sekolah, orang tua atau wali murid, akademisi, penerbit, media massa, tokoh masyarakat, dan pemangku kepentingan di bawah koordinasi Direktorat Jenderal Pendidikan Dasar dan Menengah Kementerian Pendidikan dan Kebudayaan.',
+            'features_title' => 'Keunggulan Program Literasi',
             'features' => [
                 [
                     'title' => 'Koleksi Lengkap',
@@ -38,6 +39,7 @@ Program Gerakan Literasi Sekolah dikemas dan dikembangkan berdasarkan Permendikb
                     'icon' => '📋'
                 ]
             ],
+            'statistics_title' => 'Statistik Literasi',
             'statistics' => [
                 [
                     'label' => 'Total Koleksi Buku',

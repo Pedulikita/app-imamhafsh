@@ -41,6 +41,10 @@ export default function Index({ contents }: Props) {
         }
     };
 
+    // Find the content that is currently displayed (active with lowest sort_order)
+    const activeContents = contents.filter(c => c.is_active).sort((a, b) => a.sort_order - b.sort_order);
+    const displayedContentId = activeContents.length > 0 ? activeContents[0].id : null;
+
     return (
         <AppLayout>
             <Head title="Literasi Content Management" />
@@ -50,7 +54,7 @@ export default function Index({ contents }: Props) {
                     <div>
                         <h1 className="text-3xl font-bold">Literasi Content</h1>
                         <p className="text-muted-foreground">
-                            Manage literasi sekolah page content
+                            Kelola konten halaman literasi sekolah. Hanya 1 konten aktif yang akan ditampilkan di website (berdasarkan urutan terkecil).
                         </p>
                     </div>
                     <Link href="/admin/literasi-content/create">
@@ -65,7 +69,7 @@ export default function Index({ contents }: Props) {
                     <CardHeader>
                         <CardTitle>Literasi Content List</CardTitle>
                         <CardDescription>
-                            All literasi content entries
+                            Semua konten literasi. Konten dengan status "Active" dan urutan terkecil akan ditampilkan di halaman public.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -101,7 +105,14 @@ export default function Index({ contents }: Props) {
                                     {contents.map((content) => (
                                         <TableRow key={content.id}>
                                             <TableCell className="font-medium">
-                                                {content.title}
+                                                <div className="flex items-center gap-2">
+                                                    {content.title}
+                                                    {content.id === displayedContentId && (
+                                                        <Badge variant="default" className="bg-green-600">
+                                                            Di Public
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
                                                 {content.subtitle || '-'}

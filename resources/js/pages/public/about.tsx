@@ -2,6 +2,7 @@ import PublicLayout from '@/layouts/public-layout';
 import { Head, usePage } from '@inertiajs/react';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { MessageCircle, Printer, Twitter } from 'lucide-react';
+import { formatArticleContent } from '@/utils/formatContent';
 
 interface ProfilePage {
   id: number;
@@ -120,8 +121,8 @@ export default function About() {
                             {page?.content ? (
                                 <div className="space-y-4 text-slate-600">
                                     <div 
-                                        className="prose prose-slate max-w-none leading-relaxed"
-                                        dangerouslySetInnerHTML={{ __html: page.content }}
+                                        className="article-content"
+                                        dangerouslySetInnerHTML={{ __html: formatArticleContent(page.content) }}
                                     />
                                 </div>
                             ) : (

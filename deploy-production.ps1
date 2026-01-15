@@ -138,4 +138,5 @@ if ($DryRun) {
 }
 
 Write-Host ""
-Write-Host ("Deployment selesai pada {0}" -f (Get-Date)) -ForegroundColor $Cyan
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+Write-Host "Deployment selesai pada $timestamp" -ForegroundColor $Cyan
