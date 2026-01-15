@@ -115,6 +115,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings/contact', [\App\Http\Controllers\Admin\SettingsController::class, 'contact'])->name('settings.contact');
         Route::get('settings/social', [\App\Http\Controllers\Admin\SettingsController::class, 'social'])->name('settings.social');
         Route::get('settings/general', [\App\Http\Controllers\Admin\SettingsController::class, 'general'])->name('settings.general');
+        Route::get('settings/achievement-banner', [\App\Http\Controllers\Admin\SettingsController::class, 'achievementBanner'])->name('settings.achievement-banner');
         Route::put('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
         Route::post('settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.store');
         Route::post('settings/initialize-defaults', [\App\Http\Controllers\Admin\SettingsController::class, 'initializeDefaults'])->name('settings.initialize-defaults');

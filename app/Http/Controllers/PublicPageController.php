@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProfilePage;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,8 +18,15 @@ class PublicPageController extends Controller
             })
             ->first();
         
+        $siteSettings = [
+            'contact' => SiteSetting::getGroupAsArray('contact'),
+            'social' => SiteSetting::getGroupAsArray('social'),
+            'achievement_banner' => SiteSetting::getGroupAsArray('achievement_banner'),
+        ];
+        
         return Inertia::render('public/about', [
             'page' => $page,
+            'siteSettings' => $siteSettings,
         ]);
     }
 

@@ -302,6 +302,11 @@ const adminNavItems: NavItemWithChildren[] = [
                 href: '/admin/settings/social',
                 icon: Share2,
             },
+            {
+                title: 'Achievement Banner',
+                href: '/admin/settings/achievement-banner',
+                icon: Trophy,
+            },
         ],
     },
 ];

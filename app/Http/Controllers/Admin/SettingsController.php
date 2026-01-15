@@ -48,6 +48,14 @@ class SettingsController extends Controller
         ]);
     }
 
+    public function achievementBanner()
+    {
+        $settings = SiteSetting::where('group', 'achievement_banner')->orderBy('order')->get();
+        return Inertia::render('Admin/Settings/AchievementBanner', [
+            'settings' => $settings
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -72,6 +80,11 @@ class SettingsController extends Controller
 
     public function update(Request $request, $id = null)
     {
+        // Handle Achievement Banner specific updates
+        if ($request->has('group') && $request->get('group') === 'achievement_banner') {
+            return $this->updateAchievementBanner($request);
+        }
+
         if ($request->has('bulk_update')) {
             return $this->bulkUpdate($request);
         }
@@ -97,6 +110,59 @@ class SettingsController extends Controller
         \Illuminate\Support\Facades\Cache::flush();
 
         return back()->with('success', 'Pengaturan berhasil diperbarui');
+    }
+
+    protected function updateAchievementBanner(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'achievement_banner_title' => 'required|string|max:255',
+            'achievement_banner_subtitle' => 'nullable|string|max:255',
+            'achievement_banner_description' => 'nullable|string|max:500',
+            'achievement_banner_bg_color' => 'required|string|max:50',
+            'achievement_banner_header_color' => 'required|string|max:50',
+            'achievement_banner_enabled' => 'required|in:true,false',
+            'achievement_banner_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $settingsData = [
+            'achievement_banner_title' => $request->get('achievement_banner_title'),
+            'achievement_banner_subtitle' => $request->get('achievement_banner_subtitle'),
+            'achievement_banner_description' => $request->get('achievement_banner_description'),
+            'achievement_banner_bg_color' => $request->get('achievement_banner_bg_color'),
+            'achievement_banner_header_color' => $request->get('achievement_banner_header_color'),
+            'achievement_banner_enabled' => $request->get('achievement_banner_enabled'),
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('achievement_banner_image_file')) {
+            $image = $request->file('achievement_banner_image_file');
+            $imagePath = $image->store('achievement-banner', 'public');
+            $settingsData['achievement_banner_image'] = '/storage/' . $imagePath;
+        }
+
+        // Update or create settings
+        foreach ($settingsData as $key => $value) {
+            SiteSetting::updateOrCreate(
+                ['key' => $key, 'group' => 'achievement_banner'],
+                [
+                    'value' => $value,
+                    'label' => ucfirst(str_replace(['achievement_banner_', '_'], ['', ' '], $key)),
+                    'type' => in_array($key, ['achievement_banner_description']) ? 'textarea' : 'text',
+                    'order' => array_search($key, array_keys($settingsData)) + 1,
+                    'is_active' => true
+                ]
+            );
+        }
+
+        // Clear all caches
+        SiteSetting::clearCache();
+        \Illuminate\Support\Facades\Cache::flush();
+
+        return back()->with('success', 'Achievement Banner berhasil diperbarui');
     }
 
     protected function bulkUpdate(Request $request)

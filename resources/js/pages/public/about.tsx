@@ -24,6 +24,7 @@ interface PageProps extends InertiaPageProps {
   siteSettings?: {
     contact: Array<{key: string, value: string, label: string}> | null;
     social: Array<{key: string, value: string, label: string}> | null;
+    achievement_banner: Array<{key: string, value: string, label: string}> | null;
   } | null;
 }
 
@@ -31,7 +32,7 @@ export default function About() {
     const { page, siteSettings } = usePage<PageProps>().props;
     
     // Helper function to get setting value by key with proper error handling
-    const getSetting = (group: 'contact' | 'social', key: string, fallback = '') => {
+    const getSetting = (group: 'contact' | 'social' | 'achievement_banner', key: string, fallback = '') => {
         try {
             if (!siteSettings || !siteSettings[group] || !Array.isArray(siteSettings[group])) {
                 return fallback;
@@ -74,11 +75,11 @@ export default function About() {
             <Head title={page?.title || "Profile Imam Hafsh Islamic School"} />
             
             {/* Hero Image */}
-            <div className="w-full">
+            <div className="w-full h-full">
                 <img 
                     src={getHeroImage()} 
                     alt="Banner" 
-                    className="h-64 w-full object-cover object-top md:h-80 lg:h-96"
+                    className="h-80 w-full object-cover object-top"
                 />
             </div>
 
@@ -186,19 +187,33 @@ export default function About() {
                                         </div>
                                     </div>
 
-                                    {/* Achievement Banner */}
-                                    <div className="overflow-hidden rounded-xl bg-emerald-50 text-center shadow-lg">
-                                        <div className="bg-emerald-600 py-2 text-white">
-                                            <h3 className="font-bold">Selamat & Sukses</h3>
+                                    {/* Achievement Banner - Dynamic from Site Settings */}
+                                    {getSetting('achievement_banner', 'achievement_banner_enabled') === 'true' && (
+                                        <div className={`overflow-hidden rounded-xl bg-${getSetting('achievement_banner', 'achievement_banner_bg_color', 'emerald-50')} text-center shadow-lg`}>
+                                            <div className={`bg-${getSetting('achievement_banner', 'achievement_banner_header_color', 'emerald-600')} py-3 text-white`}>
+                                                <h3 className="font-bold">
+                                                    {getSetting('achievement_banner', 'achievement_banner_title', 'Selamat & Sukses')}
+                                                </h3>
+                                                {getSetting('achievement_banner', 'achievement_banner_subtitle') && (
+                                                    <p className="text-sm opacity-90">
+                                                        {getSetting('achievement_banner', 'achievement_banner_subtitle')}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="p-4">
+                                                <img 
+                                                    src={getSetting('achievement_banner', 'achievement_banner_image', '/images/PRESTAS.png')} 
+                                                    alt="Achievement" 
+                                                    className="mx-auto mb-4 h-64 object-contain"
+                                                />
+                                                {getSetting('achievement_banner', 'achievement_banner_description') && (
+                                                    <p className="text-sm text-slate-600">
+                                                        {getSetting('achievement_banner', 'achievement_banner_description')}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="p-4">
-                                            <img 
-                                                src="/images/PRESTAS.png" 
-                                                alt="Achievement" 
-                                                className="mx-auto mb-4 h-64 object-contain"
-                                            />
-                                        </div>
-                                    </div>
+                                    )}
                                 </>
                             )}
                         </div>
