@@ -65,6 +65,29 @@ class SiteSetting extends Model
         });
     }
 
+    // Get settings by group as key-value array
+    public static function getGroupAsArray($group)
+    {
+        // Auto-initialize settings if not exist
+        self::initializeDefaults();
+        
+        return Cache::remember("site_settings_array_{$group}", 3600, function () use ($group) {
+            $settings = self::where('group', $group)
+                ->where('is_active', true)
+                ->orderBy('order')
+                ->get(['key', 'value']);
+            
+            $array = [];
+            foreach ($settings as $setting) {
+                // Remove group prefix from key (e.g., 'contact_email' -> 'email')
+                $key = str_replace($group . '_', '', $setting->key);
+                $array[$key] = $setting->value;
+            }
+            
+            return $array;
+        });
+    }
+
     // Clear all settings cache
     public static function clearCache()
     {
@@ -76,6 +99,7 @@ class SiteSetting extends Model
         $groups = self::distinct()->pluck('group');
         foreach ($groups as $group) {
             Cache::forget("site_settings_group_{$group}");
+            Cache::forget("site_settings_array_{$group}");
         }
         
         // Clear initialization flag to force reload
@@ -150,11 +174,13 @@ class SiteSetting extends Model
         static::saved(function ($setting) {
             Cache::forget("site_setting_{$setting->key}");
             Cache::forget("site_settings_group_{$setting->group}");
+            Cache::forget("site_settings_array_{$setting->group}");
         });
 
         static::deleted(function ($setting) {
             Cache::forget("site_setting_{$setting->key}");
             Cache::forget("site_settings_group_{$setting->group}");
+            Cache::forget("site_settings_array_{$setting->group}");
         });
     }
 }
