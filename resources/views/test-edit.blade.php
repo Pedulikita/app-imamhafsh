@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test User Edit</title>
+</head>
+<body>
+    <h1>Test User Edit Form</h1>
+    
+    @if(session('success'))
+        <div style="color: green;">{{ session('success') }}</div>
+    @endif
+    
+    @if($errors->any())
+        <div style="color: red;">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
+    <form action="/users/1" method="POST">
+        @csrf
+        @method('PUT')
+        
+        <div>
+            <label>Name:</label>
+            <input type="text" name="name" value="Test User Updated" required>
+        </div>
+        
+        <div>
+            <label>Email:</label>
+            <input type="email" name="email" value="test@example.com" required>
+        </div>
+        
+        <div>
+            <label>Password (leave blank to keep current):</label>
+            <input type="password" name="password">
+        </div>
+        
+        <div>
+            <label>Password Confirmation:</label>
+            <input type="password" name="password_confirmation">
+        </div>
+        
+        <div>
+            <h3>Roles:</h3>
+            <input type="checkbox" name="roles[]" value="1" checked> Super Admin<br>
+        </div>
+        
+        <button type="submit">Update User</button>
+    </form>
+    
+    <hr>
+    <a href="/users">Back to Users List</a>
+</body>
+</html>
