@@ -65,7 +65,7 @@ class DonationEmbedController extends Controller
 
         DonationEmbed::create($data);
 
-        return redirect()->route('donation-embeds.index')
+        return redirect()->route('admin.donation-embeds.index')
             ->with('success', 'Donation embed created successfully.');
     }
 
@@ -129,7 +129,7 @@ class DonationEmbedController extends Controller
 
         $donationEmbed->update($data);
 
-        return redirect()->route('donation-embeds.index')
+        return redirect()->route('admin.donation-embeds.index')
             ->with('success', 'Donation embed updated successfully.');
     }
 
