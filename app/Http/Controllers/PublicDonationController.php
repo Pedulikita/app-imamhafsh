@@ -13,6 +13,8 @@ class PublicDonationController extends Controller
             ->ordered()
             ->get()
             ->map(function ($donation) {
+                $formatter = new \NumberFormatter('id_ID', \NumberFormatter::CURRENCY);
+                
                 return [
                     'id' => $donation->id,
                     'title' => $donation->title,
@@ -26,6 +28,8 @@ class PublicDonationController extends Controller
                     'image_url' => $donation->image_url,
                     'progress_percentage' => $donation->progress_percentage,
                     'additional_info' => $donation->additional_info,
+                    'formatted_collected_amount' => $formatter->formatCurrency($donation->collected_amount, $donation->currency),
+                    'formatted_target_amount' => $formatter->formatCurrency($donation->target_amount, $donation->currency),
                 ];
             });
 
