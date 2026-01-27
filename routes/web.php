@@ -57,6 +57,8 @@ Route::get('/testimoni', [\App\Http\Controllers\PublicContentController::class, 
 
 Route::get('/pendaftaran', [\App\Http\Controllers\PublicContentController::class, 'pendaftaran'])->name('pendaftaran');
 
+Route::get('/alldonasi', [\App\Http\Controllers\PublicDonationController::class, 'index'])->name('alldonasi');
+
 Route::get('/privacy-policy', [\App\Http\Controllers\PublicPageController::class, 'privacy'])->name('privacy');
 
 Route::get('/terms-conditions', [\App\Http\Controllers\PublicPageController::class, 'terms'])->name('terms');

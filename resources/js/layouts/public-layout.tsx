@@ -88,7 +88,7 @@ const navItems: NavItem[] = [
             { label: 'FAQ', href: '/pendaftaran#faq', type: 'anchor' },
         ],
     },
-    { label: 'Donasi', href: 'https://temenbail.com', type: 'external' },
+    { label: 'Donasi', href: '/alldonasi', type: 'external' },
 ];
 
 function PublicLogo() {
