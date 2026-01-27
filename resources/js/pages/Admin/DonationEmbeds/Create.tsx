@@ -24,6 +24,7 @@ export default function Create() {
         direct_url: '',
         target_amount: '',
         collected_amount: '',
+        currency: 'IDR',
         donors_count: '',
         image: null as File | null,
         additional_info: '',

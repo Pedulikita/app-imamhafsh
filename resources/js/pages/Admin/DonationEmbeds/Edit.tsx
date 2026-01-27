@@ -18,6 +18,7 @@ interface DonationEmbed {
     direct_url: string;
     target_amount: number;
     collected_amount: number;
+    currency: string;
     donors_count: number;
     image_url?: string;
     additional_info?: string;
@@ -43,6 +44,7 @@ export default function Edit({ donationEmbed }: Props) {
         direct_url: donationEmbed.direct_url,
         target_amount: donationEmbed.target_amount.toString(),
         collected_amount: donationEmbed.collected_amount.toString(),
+        currency: donationEmbed.currency || 'IDR',
         donors_count: donationEmbed.donors_count.toString(),
         image: null as File | null,
         additional_info: donationEmbed.additional_info || '',
